@@ -34,4 +34,14 @@ void setAddFile(const char* file_to_add) throw(boost::filesystem::filesystem_err
 	}
 	content += stream.str();
 
+	// Creer le dossier 'content.substr(0, 2)'
+    const auto pathFolderContent = path.append(".git/objects/" + content.substr(0, 2));
+    boost::filesystem::create_directory(pathFolderContent);
+
+	// Creer le fichier 'content'
+	std::ofstream sha_content(path.append(content).c_str());
+    sha_content.close();
+
+	std::cout << content << std::endl;
+
 }
