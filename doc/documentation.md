@@ -12,6 +12,6 @@ commit id
 - arbre (on creer un arbre pour chaque dossier de façon recursif) >> a.txt + [sha]
     l'arbre est modifier quand on fait un add, pas besoin quand on fait un commit simple
     blob >> commence par 16... (fichiers)
-    tree >> commence par 00... (dossiers)   
+    tree >> commence par 00... (dossiers)
 - message
 - auteur
