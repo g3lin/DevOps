@@ -17,7 +17,7 @@ void setInit() throw(boost::filesystem::filesystem_error) {
     boost::filesystem::create_directory(pathFolderGitus);
 
     // Creer le fichier 'index'
-    boost::filesystem::ofstream index("index");
+    boost::filesystem::ofstream index(".git/index");
     index.close();
 
     // Creer le dossier 'objects'

@@ -15,3 +15,7 @@ commit id
     tree >> commence par 00... (dossiers)
 - message
 - auteur
+
+Index
+- Tous les fichiers qu'il y a dans le staying
+- On veux le juste le sha et le nom de fihier en .txt
