@@ -35,13 +35,27 @@ void setAddFile(const char* file_to_add) throw(boost::filesystem::filesystem_err
 	content += stream.str();
 
 	// Creer le dossier 'content.substr(0, 2)'
-    const auto pathFolderContent = path.append(".git/objects/" + content.substr(0, 2));
+    const auto pathFolderContent = path.append(".git/objects/" + stream.str().substr(0, 2));
     boost::filesystem::create_directory(pathFolderContent);
 
 	// Creer le fichier 'content'
-	std::ofstream sha_content(path.append(content.substr(2,-1)).c_str());
+	std::ofstream sha_content(path.append(stream.str().substr(2,-1)).c_str());
     sha_content.close();
 
-	std::cout << content << std::endl;
+	// Ajoute le sha et le fichier a l'index
+	std::fstream index(".git/index");
+
+	if (index) {
+		std::stringstream oss;
+		oss << stream.str() << " " << file_to_add << "\n" << index.rdbuf();
+		index.seekp(0) << oss.str();
+
+	}else {
+    	std::cout << "ERREUR: Impossible d'ouvrir le fichier." << std::endl;
+	}
+
+	index.close();
+
+	//std::cout << content << std::endl;
 
 }

@@ -17,5 +17,5 @@ commit id
 - auteur
 
 Index
-- Tous les fichiers qu'il y a dans le staying
+- Tous les fichiers qu'il y a dans le staging
 - On veux le juste le sha et le nom de fihier en .txt
