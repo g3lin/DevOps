@@ -5,7 +5,8 @@ add_library(git
     init.cpp
     add.h
     add.cpp
-    )
+    commit.h
+    commit.cpp    )
 if (UNIX)
 target_link_libraries(git 
     PUBLIC 
