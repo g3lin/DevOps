@@ -50,7 +50,8 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     if(headFile.good() && headContent != ""){
         commitContentS << "parent " << headContent << std::endl;
     }
-    commitContentS << "author " << author << " <" << email << ">" << std::endl;
+    commitContentS << "author " << author << " <" << email << "> " << std::time(0) << std::endl;
+    commitContentS << "committer " << author << " <" << email << "> " << std::time(0) << std::endl;
     commitContentS << message ;
 
     std::string commitContent = commitContentS.str();
