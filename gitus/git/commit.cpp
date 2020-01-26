@@ -9,7 +9,7 @@
 
 void getCommitHelp() {
     // Affichage du "./gitus commit --help"
-    std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
+    // std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
 }
 
 void setCommit(const char* message,const char* author,const char* email) throw(boost::filesystem::filesystem_error) {
@@ -30,6 +30,7 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
         };
 
         previousTreeHash  = previousCommitContent.substr(5,45);
+        // std::cout << previousTreeHash <<std::endl;
         
     }
 
@@ -52,12 +53,12 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
         indexContent = indexContent.substr(indexContent.find("\n")+1, -1);
 
         // On gere la ligne
-        
+        previousTreeHash = parseLine(previousTreeHash, indexContentLine);
+
     }
-    previousTreeHash = parseLine(previousTreeHash, indexContentLine);
+    std::string hashTree = parseLine(previousTreeHash, indexContentLine);
 
     // On recupere le SHA
-    std::string hashTree = previousTreeHash;
 
 
 
@@ -68,8 +69,6 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     // parent [SHA1]
     // author [author] <[email]> 
     // [MESSAGE]
-    boost::uuids::detail::sha1 sha_commit;
-    std::string hashParent= "00000000";
 
     
     std::stringstream commitContentS ;
@@ -103,8 +102,7 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
 
 
 std::string parseLine(std::string TreeHash, std::string index){
-    std::cout << TreeHash << " " << index << std::endl;
-
+    
     std::string SHAReturn = "";
     std::string TreeContent = ""  ;
 
@@ -115,6 +113,7 @@ std::string parseLine(std::string TreeHash, std::string index){
             std::istreambuf_iterator<char>(TreeFile), std::istreambuf_iterator<char>() 
         };
         TreeContent = TreeContent_temp;
+        std::cout << TreeContent << std::endl ;
     }
  
     
@@ -128,9 +127,9 @@ std::string parseLine(std::string TreeHash, std::string index){
 
         // On vérifie si ce fichier n'est pas dans TreeContent
         if( TreeContent.find(pathname) != -1){
-            TreeContent.replace(TreeContent.find(pathname)-41 , TreeContent.find(pathname)+pathname.length()+5 , "");
+            TreeContent.replace(TreeContent.find(pathname)-41 , TreeContent.find(pathname)+pathname.length()+6 , "");
         }
-        TreeContent += "\n" + SHA + " " + pathname + " blob"; 
+        TreeContent += SHA + " " + pathname + " blob\n"; 
         SHAReturn = calculateSHA(TreeContent);
         makeObject(SHAReturn, TreeContent);
     }
@@ -138,18 +137,17 @@ std::string parseLine(std::string TreeHash, std::string index){
     else{
         // On est dans un dossier, il faut faire de la recursivité
         std::string folder = pathname.substr(0,pathname.find("/"));
-        std::string subPathName = pathname.substr(pathname.find("/")+1,-1);
-        std::string SHAFile = pathname.substr(0, 40);
+        std::string subPathName = pathname.substr(pathname.find("/")+1,-1); 
         
         std::string SHASubTree = "";
         // On checke si le sous dossier existe deja
         if( TreeContent.find(folder) != -1){
             SHASubTree = TreeContent.substr(TreeContent.find(folder)-41, TreeContent.find(folder)-1);
-            TreeContent.replace(TreeContent.find(folder)-41 , TreeContent.find(folder)+folder.length()+5, "");
+            TreeContent.replace(TreeContent.find(folder)-41 , TreeContent.find(folder)+folder.length()+6, "");
         }
 
-        std::string SHASubReturn = parseLine(SHASubTree, SHAFile + " " + subPathName);
-        TreeContent += "\n" + SHASubReturn + " " + folder + " tree"; 
+        std::string SHASubReturn = parseLine(SHASubTree, SHA + " " + subPathName);
+        TreeContent += "\n" + SHASubReturn + " " + folder + " tree\n"; 
         SHAReturn = calculateSHA(TreeContent);
         makeObject(SHAReturn, TreeContent);
 
