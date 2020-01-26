@@ -1,4 +1,6 @@
 add_library(git
+    utils.h
+    utils.cpp
     dummy.h 
     dummy.cpp
     init.h

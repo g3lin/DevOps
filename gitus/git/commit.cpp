@@ -1,4 +1,5 @@
 #include "commit.h"
+#include "utils.h"
 
 #include <fstream>
 #include <iostream>
@@ -15,23 +16,49 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     // Recuperer le chemin actuel
     auto path = boost::filesystem::current_path();
 
+    std::ifstream headFile(".git/HEAD");
+	std::string headContent { 
+        std::istreambuf_iterator<char>(headFile), std::istreambuf_iterator<char>() 
+    };
+
+    std::string previousTreeHash  = "";
+    if(headFile.good() && headContent != ""){
+        // On cherche l'arbre précédent
+        std::ifstream previousCommitFile(".git/objects/"+headContent.substr(0, 2)+ "/" + headContent.substr(2,-1));
+        std::string previousCommitContent { 
+            std::istreambuf_iterator<char>(previousCommitFile), std::istreambuf_iterator<char>() 
+        };
+
+        previousTreeHash  = previousCommitContent.substr(5,45);
+        
+    }
+
+    
+
+
     // On va récupérer ce qui est en staging et en faire un arbre
     // On cherche donc ce qu'il y a dans le fichier index
-
     std::ifstream indexFile(".git/index");
 	std::string indexContent { 
         std::istreambuf_iterator<char>(indexFile), std::istreambuf_iterator<char>() 
     };
 
-    // On en fait un SHA
-    std::string hashTree = calculateSHA(indexContent.c_str());
-    //On crée l'arbre
-     makeObject(hashTree,indexContent.c_str());
 
-	std::ifstream headFile(".git/HEAD");
-	std::string headContent { 
-        std::istreambuf_iterator<char>(headFile), std::istreambuf_iterator<char>() 
-    };
+    // On va parser l'index pour chaque ligne
+    std::string indexContentLine = "";
+    while(indexContent.find("\n") != -1){
+        // On isole une ligne
+        indexContentLine = indexContent.substr(0,indexContent.find("\n"));
+        indexContent = indexContent.substr(indexContent.find("\n")+1, -1);
+
+        // On gere la ligne
+        
+    }
+    previousTreeHash = parseLine(previousTreeHash, indexContentLine);
+
+    // On recupere le SHA
+    std::string hashTree = previousTreeHash;
+
 
 
 
@@ -51,7 +78,7 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
         commitContentS << "parent " << headContent << std::endl;
     }
     commitContentS << "author " << author << " <" << email << "> " << std::time(0) << std::endl;
-    commitContentS << "committer " << author << " <" << email << "> " << std::time(0) << std::endl;
+    commitContentS << "committer " << author << " <" << email << "> " << std::time(0) << std::endl << std::endl;
     commitContentS << message ;
 
     std::string commitContent = commitContentS.str();
@@ -75,36 +102,63 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
 }
 
 
+std::string parseLine(std::string TreeHash, std::string index){
+    std::cout << TreeHash << " " << index << std::endl;
 
-std::string calculateSHA(const std::string string){
-    std::string SHAFinal = "";
+    std::string SHAReturn = "";
+    std::string TreeContent = ""  ;
 
-    boost::uuids::detail::sha1 sha;
-    sha.process_bytes(string.c_str(), string.length());
+    // On va ouvrir l'arbre pour en avoir le contenu ssi on a un hash
+    if (TreeHash != ""){
+        std::ifstream TreeFile(".git/objects/"+TreeHash.substr(0, 2)+ "/" + TreeHash.substr(2,-1));
+        std::string TreeContent_temp { 
+            std::istreambuf_iterator<char>(TreeFile), std::istreambuf_iterator<char>() 
+        };
+        TreeContent = TreeContent_temp;
+    }
+ 
+    
 
-    unsigned int hash[5];
-	sha.get_digest(hash);
+    // On cherche le nom et le hash du fichier à ajouter
+    std::string SHA = index.substr(0,40);
+    std::string pathname = index.substr(41,-1);
 
-	std::stringstream stream;
-	for (int i = 0; i < 5; ++i) {
-		stream << std::hex << hash[i];
-	}
-	SHAFinal =  stream.str();
+    if (pathname.find("/") == -1){
+        // Ce n'est pas un dossier juste un fichier
 
-    return SHAFinal;
+        // On vérifie si ce fichier n'est pas dans TreeContent
+        if( TreeContent.find(pathname) != -1){
+            TreeContent.replace(TreeContent.find(pathname)-41 , TreeContent.find(pathname)+pathname.length()+5 , "");
+        }
+        TreeContent += "\n" + SHA + " " + pathname + " blob"; 
+        SHAReturn = calculateSHA(TreeContent);
+        makeObject(SHAReturn, TreeContent);
+    }
+
+    else{
+        // On est dans un dossier, il faut faire de la recursivité
+        std::string folder = pathname.substr(0,pathname.find("/"));
+        std::string subPathName = pathname.substr(pathname.find("/")+1,-1);
+        std::string SHAFile = pathname.substr(0, 40);
+        
+        std::string SHASubTree = "";
+        // On checke si le sous dossier existe deja
+        if( TreeContent.find(folder) != -1){
+            SHASubTree = TreeContent.substr(TreeContent.find(folder)-41, TreeContent.find(folder)-1);
+            TreeContent.replace(TreeContent.find(folder)-41 , TreeContent.find(folder)+folder.length()+5, "");
+        }
+
+        std::string SHASubReturn = parseLine(SHASubTree, SHAFile + " " + subPathName);
+        TreeContent += "\n" + SHASubReturn + " " + folder + " tree"; 
+        SHAReturn = calculateSHA(TreeContent);
+        makeObject(SHAReturn, TreeContent);
+
+    }
+
+    
+    return SHAReturn;
 }
 
-void makeObject(const std::string SHA, const std::string content){
-    auto path = boost::filesystem::current_path();
 
-    // Creer le dossier 'content.substr(0, 2)'
-    const auto pathFolderContent = path.append(".git/objects/" + SHA.substr(0, 2));
-    boost::filesystem::create_directory(pathFolderContent);
 
-	// Creer le fichier 'content' et le remplit
-	std::ofstream sha_content(path.append(SHA.substr(2,-1)).c_str());
-    sha_content.seekp(0) << content;
-    sha_content.close();
-
-}
 
