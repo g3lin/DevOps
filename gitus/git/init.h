@@ -2,5 +2,6 @@
 
 #include <boost/filesystem.hpp>
 
-void getInitHelp();
-void setInit() throw(boost::filesystem::filesystem_error);
+bool checkInit();
+bool getInitHelp();
+bool setInit() throw(boost::filesystem::filesystem_error);
