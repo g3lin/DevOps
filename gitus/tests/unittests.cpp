@@ -23,4 +23,17 @@ TEST_CASE("Test commande 'init'") {
 	
 	// Verifier si les dossiers/fichiers sont bien crees
 	REQUIRE(checkInit() == true);
+	
+}
+
+TEST_CASE("Test commande 'add'") {
+	// Verifier si les fonctions s'executent bien
+	REQUIRE(getAddHelp() == true);
+
+	const char* file_to_add = "test.txt";
+	REQUIRE(setAddFile(file_to_add) == true);
+
+	// Verifier le rapport entre les dossiers/fichiers creent et index
+	REQUIRE(checkAdd() == true);
+
 }
