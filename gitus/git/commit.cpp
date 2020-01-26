@@ -5,6 +5,7 @@
 #include <sstream>
 #include <boost/uuid/detail/sha1.hpp>
 
+
 void getCommitHelp() {
     // Affichage du "./gitus commit --help"
     std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
@@ -17,9 +18,9 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     // On va récupérer ce qui est en staging et en faire un arbre
     // On cherche donc ce qu'il y a dans le fichier index
 
-    std::ifstream file(".git/index");
+    std::ifstream indexFile(".git/index");
 	std::string indexContent { 
-        std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() 
+        std::istreambuf_iterator<char>(indexFile), std::istreambuf_iterator<char>() 
     };
 
     // On en fait un SHA
@@ -27,7 +28,10 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     //On crée l'arbre
      makeObject(hashTree,indexContent.c_str());
 
-	
+	std::ifstream headFile(".git/HEAD");
+	std::string headContent { 
+        std::istreambuf_iterator<char>(headFile), std::istreambuf_iterator<char>() 
+    };
 
 
 
@@ -43,8 +47,11 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     
     std::stringstream commitContentS ;
     commitContentS << "tree " << hashTree << std::endl;
-    commitContentS << "parent " << hashParent << std::endl;
-    commitContentS << "author " << author << " <" << email << ">" << std::endl;
+    if(headFile.good() && headContent != ""){
+        commitContentS << "parent " << headContent << std::endl;
+    }
+    commitContentS << "author " << author << " <" << email << "> " << std::time(0) << std::endl;
+    commitContentS << "committer " << author << " <" << email << "> " << std::time(0) << std::endl;
     commitContentS << message ;
 
     std::string commitContent = commitContentS.str();
@@ -52,9 +59,22 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
 	std::string SHACommit = calculateSHA(commitContent);
     makeObject(SHACommit, commitContent);
 
+    indexFile.close();
+    headFile.close();
 
+    // Nettoyer et mettre à jour HEAD
+    std::ofstream indexFileW;
+    indexFileW.open(".git/index", std::ios::out | std::ios::trunc);
+    indexFileW.close();
+
+    std::ofstream headFileW;
+    headFileW.open(".git/HEAD", std::ios::out | std::ios::trunc);
+    headFileW<<SHACommit;
+    headFileW.close();
 
 }
+
+
 
 std::string calculateSHA(const std::string string){
     std::string SHAFinal = "";
