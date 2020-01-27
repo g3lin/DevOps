@@ -9,7 +9,7 @@
 
 void getCommitHelp() {
     // Affichage du "./gitus commit --help"
-    // std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
+    std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
 }
 
 void setCommit(const char* message,const char* author,const char* email) throw(boost::filesystem::filesystem_error) {
@@ -28,10 +28,8 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
         std::string previousCommitContent { 
             std::istreambuf_iterator<char>(previousCommitFile), std::istreambuf_iterator<char>() 
         };
-
-        previousTreeHash  = previousCommitContent.substr(5,45);
-        // std::cout << previousTreeHash <<std::endl;
         
+        previousTreeHash  = previousCommitContent.substr(5,previousCommitContent.find("\n")-5);        
     }
 
     
@@ -105,6 +103,7 @@ std::string parseLine(std::string TreeHash, std::string index){
     
     std::string SHAReturn = "";
     std::string TreeContent = ""  ;
+    std::cout << TreeHash << std::endl ;
 
     // On va ouvrir l'arbre pour en avoir le contenu ssi on a un hash
     if (TreeHash != ""){
@@ -119,14 +118,15 @@ std::string parseLine(std::string TreeHash, std::string index){
     
 
     // On cherche le nom et le hash du fichier à ajouter
-    std::string SHA = index.substr(0,40);
-    std::string pathname = index.substr(41,-1);
+    std::string SHA = index.substr(0,index.find(" "));
+    std::string pathname = index.substr(index.find(" ")+1,-1);
+
 
     if (pathname.find("/") == -1){
         // Ce n'est pas un dossier juste un fichier
 
         // On vérifie si ce fichier n'est pas dans TreeContent
-        if( TreeContent.find(pathname) != -1){
+        if( TreeContent.find(pathname) != std::string::npos){
             TreeContent.replace(TreeContent.find(pathname)-41 , TreeContent.find(pathname)+pathname.length()+6 , "");
         }
         TreeContent += SHA + " " + pathname + " blob\n"; 
@@ -137,11 +137,11 @@ std::string parseLine(std::string TreeHash, std::string index){
     else{
         // On est dans un dossier, il faut faire de la recursivité
         std::string folder = pathname.substr(0,pathname.find("/"));
-        std::string subPathName = pathname.substr(pathname.find("/")+1,-1); 
+        std::string subPathName = pathname.substr(pathname.find("/"),-1); 
         
         std::string SHASubTree = "";
         // On checke si le sous dossier existe deja
-        if( TreeContent.find(folder) != -1){
+        if( TreeContent.find(folder) != std::string::npos){
             SHASubTree = TreeContent.substr(TreeContent.find(folder)-41, TreeContent.find(folder)-1);
             TreeContent.replace(TreeContent.find(folder)-41 , TreeContent.find(folder)+folder.length()+6, "");
         }
