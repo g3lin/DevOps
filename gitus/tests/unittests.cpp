@@ -33,3 +33,13 @@ TEST_CASE("Test commande 'add'") {
 	REQUIRE(checkAdd() == true);
 
 }
+
+TEST_CASE("Test commande 'commit'") {
+	// Verifier si les fonctions s'executent bien
+	REQUIRE(getCommitHelp() == true);
+	REQUIRE(setCommit("Validation du test", "unitTestUser", "nobody@usherbrooke.ca") == true);
+	
+	// Verifier si les dossiers/fichiers sont bien crees
+	// REQUIRE(checkInit() == true);
+	
+}

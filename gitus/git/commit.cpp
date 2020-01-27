@@ -7,12 +7,22 @@
 #include <boost/uuid/detail/sha1.hpp>
 
 
-void getCommitHelp() {
+bool getCommitHelp() {
     // Affichage du "./gitus commit --help"
-    std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
+    try {
+    	std::cout << "usage: gitus commit <msg> <author> <email>" << std::endl;
+
+		return true;
+	
+	} catch(std::string const& chaine) {
+        std::cerr << chaine << std::endl;
+
+        return false;
+    
+    }
 }
 
-void setCommit(const char* message,const char* author,const char* email) throw(boost::filesystem::filesystem_error) {
+bool setCommit(const char* message,const char* author,const char* email) throw(boost::filesystem::filesystem_error) {
     // Recuperer le chemin actuel
     auto path = boost::filesystem::current_path();
 
@@ -93,6 +103,8 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     headFileW.open(".git/HEAD", std::ios::out | std::ios::trunc);
     headFileW<<SHACommit;
     headFileW.close();
+
+    return true;
 
 }
 
