@@ -37,7 +37,17 @@ TEST_CASE("Test commande 'add'") {
 TEST_CASE("Test commande 'commit'") {
 	// Verifier si les fonctions s'executent bien
 	REQUIRE(getCommitHelp() == true);
+
+	std::ifstream headFileB(".git/HEAD");
+	std::string headBeforeCommit { 
+        std::istreambuf_iterator<char>(headFileB), std::istreambuf_iterator<char>() 
+    };
 	REQUIRE(setCommit("Validation du test", "unitTestUser", "nobody@usherbrooke.ca") == true);
+	std::ifstream headFileA(".git/HEAD");
+	std::string headAfterCommit { 
+        std::istreambuf_iterator<char>(headFileA), std::istreambuf_iterator<char>() 
+    };
+	REQUIRE(headBeforeCommit != headAfterCommit);
 	
 	// Verifier si les dossiers/fichiers sont bien crees
 	// REQUIRE(checkInit() == true);
