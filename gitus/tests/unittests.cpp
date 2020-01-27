@@ -5,16 +5,12 @@
 
 #include "catch.hpp"
 
-#include <dummy.h>
+
 #include <init.h>
 #include <add.h>
+#include <commit.h>
 
 
-TEST_CASE("is the world ok") {
-	REQUIRE(GetAnswerToLifeUniverseAndEverything() == 42);
-	REQUIRE(GetAnswerToLifeUniverseAndEverything() != 41);
-	REQUIRE(GetAnswerToLifeUniverseAndEverything() != 43);
-}
 
 TEST_CASE("Test commande 'init'") {
 	// Verifier si les fonctions s'executent bien

@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <dummy.h>
 #include <init.h>
 #include <add.h>
 #include <commit.h>
