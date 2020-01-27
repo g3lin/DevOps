@@ -1,4 +1,5 @@
 #include "add.h"
+#include "utils.h"
 
 #include <fstream>
 #include <iostream>
@@ -87,6 +88,9 @@ bool setAddFile(const char* file_to_add) throw(boost::filesystem::filesystem_err
 			// Creer le fichier 'content'
 			std::ofstream sha_content(path.append(stream.str().substr(2,-1)).c_str());
 			sha_content.close();
+
+			writeFile(".git/objects/" + stream.str().substr(0, 2)+"/"+stream.str().substr(2,-1), content);
+			
 
 			// Ajoute le sha et le fichier a l'index
 			std::fstream index(".git/index");

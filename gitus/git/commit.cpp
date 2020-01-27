@@ -24,10 +24,8 @@ void setCommit(const char* message,const char* author,const char* email) throw(b
     std::string previousTreeHash  = "";
     if(headFile.good() && headContent != ""){
         // On cherche l'arbre précédent
-        std::ifstream previousCommitFile(".git/objects/"+headContent.substr(0, 2)+ "/" + headContent.substr(2,-1));
-        std::string previousCommitContent { 
-            std::istreambuf_iterator<char>(previousCommitFile), std::istreambuf_iterator<char>() 
-        };
+        std::string previousCommitFile = ".git/objects/"+headContent.substr(0, 2)+ "/" + headContent.substr(2,-1);
+        std::string previousCommitContent = readFile(previousCommitFile);
         
         previousTreeHash  = previousCommitContent.substr(5,previousCommitContent.find("\n")-5);        
     }
@@ -107,12 +105,8 @@ std::string parseLine(std::string TreeHash, std::string index){
 
     // On va ouvrir l'arbre pour en avoir le contenu ssi on a un hash
     if (TreeHash != ""){
-        std::ifstream TreeFile(".git/objects/"+TreeHash.substr(0, 2)+ "/" + TreeHash.substr(2,-1));
-        std::string TreeContent_temp { 
-            std::istreambuf_iterator<char>(TreeFile), std::istreambuf_iterator<char>() 
-        };
-        TreeContent = TreeContent_temp;
-        std::cout << TreeContent << std::endl ;
+        std::string TreeContent = readFile(".git/objects/"+TreeHash.substr(0, 2)+ "/" + TreeHash.substr(2,-1));
+        // std::cout << TreeContent << std::endl ;
     }
  
     
@@ -142,7 +136,6 @@ std::string parseLine(std::string TreeHash, std::string index){
         std::string SHASubTree = "";
         // On checke si le sous dossier existe deja
         if( TreeContent.find(folder) != -1){
-            std::cout << "222222222222222"<<pathname<<folder<<subPathName << std::endl;
             SHASubTree = TreeContent.substr(TreeContent.find(folder)-41, 40);
             TreeContent.replace(TreeContent.find(folder)-41 , TreeContent.find(folder)+folder.length()+6, "");
         }
