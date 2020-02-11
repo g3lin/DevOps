@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 bool getConfig(std::string argv1) {
     // Recuperer le chemin actuel
@@ -14,6 +15,11 @@ bool getConfig(std::string argv1) {
 
     // Variables de stockage
     std::string noun_exe;
+
+    std::vector<std::string> association(2);
+    std::vector< std::vector<std::string> > list_asso;
+
+    std::vector<std::string> list_files;
 
     if(config) {
         std::string line;
@@ -32,7 +38,13 @@ bool getConfig(std::string argv1) {
             // Recuperer l'association entre variable et fichier
             if(isCompile){
                 if(line.find("-") != std::string::npos) {
-                    std::cout << "association : " << line << std::endl;
+
+                    association[0] = line.substr(line.find('-') + 1, line.find(':') - 1);
+                    association[1] = line.substr(line.find(':') + 1, -1);
+                    
+                    std::cout << "liste : " << association[0] << " >> " << association[1] << std::endl;
+
+                    list_asso.push_back(association);
                 
                 }else {
                     isCompile = false;
@@ -46,6 +58,8 @@ bool getConfig(std::string argv1) {
             // Recuperer les fichiers a utiliser
             if(line.find("package") != std::string::npos) {
                 std::cout << "fichiers utilises : " << line.substr(line.find(' ') + 1, -1) << std::endl;
+
+                //list_files.push_back(line.substr(line.find(' ') + 1, line.find(' ') - 1));
             }
         }
     }
