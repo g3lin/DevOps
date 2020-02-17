@@ -18,10 +18,11 @@ build:
   artifacts:
     paths:
       - BuildUs
+      - tests/buildtests
      
 
 # run tests using the binary built before
 test:
   stage: test
   script:
-    - ./tests/buildtests
+    - ./buildtests
