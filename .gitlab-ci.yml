@@ -25,4 +25,4 @@ build:
 test:
   stage: test
   script:
-    - ./buildtests
+    - ./BuildUs/build_fold/tests/buildtests
