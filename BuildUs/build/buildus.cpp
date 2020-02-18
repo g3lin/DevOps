@@ -147,6 +147,17 @@ bool getConfig(std::string argv1) {
 
             // Compilation des fichiers
             str = "g++ -c " + list_asso[i][1] + " -o intermediate/" + list_asso[i][0] + ".o";
+            for (int i = 0; i < include_dir.size(); i++) {
+                const char* envVar = std::getenv(include_dir[i].c_str());
+                if(envVar != NULL){
+                    std::string strEnvVar = envVar;
+                    str += " -I"+strEnvVar;
+                }
+                else{
+                    std::cerr << "Impossible de trouver la variable d'environement " + include_dir[i] << std::endl;
+                    exit(1);
+                }
+            }
 
             command = str.c_str();
 
@@ -161,8 +172,22 @@ bool getConfig(std::string argv1) {
     for (int i = 0; i < list_files.size(); i++) {
         str += "intermediate/" + list_files[i] + ".o ";
     }
+    for (int i = 0; i < library_dir.size(); i++) {
+        const char* envVar = std::getenv(library_dir[i].c_str());
+        if(envVar != NULL){
+            std::string strEnvVar = envVar;
+            str += " -L"+strEnvVar;
+        }
+        else{
+            std::cerr << "Impossible de trouver la variable d'environement " + library_dir[i] << std::endl;
+            exit(1);
+        }
+    }
+    for (int i = 0; i < list_libs.size(); i++) {
+        str += " -l" + list_libs[i].substr(3,-1) ;
+    }
 
-    str += "-o " + noun_exe;
+    str += " -o " + noun_exe;
     
     command = str.c_str();
 
