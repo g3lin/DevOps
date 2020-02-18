@@ -22,6 +22,9 @@ bool getNbArgc(int argc) {
         return true;
 
     }
+
+    // Autres cas
+    return false;
 }
 
 bool checkArgv(std::string argv1) {
@@ -30,7 +33,7 @@ bool checkArgv(std::string argv1) {
         return true;
     
     }else {
-        std::cerr << "ERREUR : Mauvaise extention de fichier" << std::endl;
+        std::cerr << "ERREUR : Mauvaise extension de fichier" << std::endl;
 
         return false;
 
