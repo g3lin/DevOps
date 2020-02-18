@@ -133,11 +133,6 @@ bool getConfig(std::string argv1) {
             }
             // -----------------------------------------------------
 
-            // Recuperer l'association entre variable et fichier ---
-            if(isCompile){
-                if(line.find("-") != std::string::npos) {
-                    association[0] = line.substr(line.find('-') + 1, line.find(':') - 1);
-                    association[1] = line.substr(line.find(':') + 1, -1);
 
             // Recuperer l'association entre variable et fichier ---
             if(isCompile){
@@ -180,6 +175,8 @@ bool getConfig(std::string argv1) {
 
         }
     }
+
+
     // Checke si le fichier des intermediaires existe et le cree sinon
     if( !boost::filesystem::exists("intermediate/")){
         if(!boost::filesystem::create_directory("intermediate")){
@@ -264,6 +261,7 @@ bool getConfig(std::string argv1) {
     system(command);
 
     return true;
+
 }
 
 

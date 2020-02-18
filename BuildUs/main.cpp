@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 
         if (argv1.substr(argv1.find('.'), -1) == ".buildus") {
             std::cout << "Extention de fichier OK" << std::endl;
+        }
 
         //std::cout << "Extention du fichier : " << argv1.substr(argv1.find('.'), -1) << std::endl;
         
@@ -55,6 +56,13 @@ int main(int argc, char *argv[]) {
             
         }
     }
+    catch(const std::exception &ex)
+        {
+            std::cerr << "Erreur" << std::endl;
+            exit(1);
+
+        }
+    
     
     return 0;
 }
