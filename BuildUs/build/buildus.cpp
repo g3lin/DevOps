@@ -76,63 +76,28 @@ bool getConfig(std::string argv1) {
                 if(line.find("var") != std::string::npos) {
                     library_dir.push_back(checkSpace(line.substr(line.find(' ') + 1, -1)));
 
-                }else if(isLibs) {
+                }else {
+                    isLibrary = false;
+                }
+            }
+
+            if(line.find("deps_library") != std::string::npos) {
+                isLibrary = true;
+            }
+
+            if(isLibs) {
+                if(line.find("-") != std::string::npos) {
                     list_libs.push_back(checkSpace(line.substr(line.find('-') + 1, -1)));
-                
-                }else if(line.find("libs") != std::string::npos) {
-                    isLibs = true;
 
                 }else {
-                    isLibrary = false;
-                    isLibs    = false;
-
+                    isLibs = false;
                 }
             }
 
-            if(line.find("deps_library") != std::string::npos) {
-                isLibrary = true;
+            if(line.find("libs") != std::string::npos) {
+                isLibs = true;
             }
             // -----------------------------------------------------
-
-            // Recuperer les includes ------------------------------
-            if(isInclude) {
-                if(line.find("var") != std::string::npos) {
-                    include_dir.push_back(line.substr(line.find(' ') + 1, -1));
-     
-                }else {
-                    isInclude = false;
-                }
-                
-            }
-
-            if(line.find("deps_include") != std::string::npos) {
-                isInclude = true;
-            }
-            // -----------------------------------------------------
-
-            // Recuperer les libraires -----------------------------
-            if(isLibrary) {
-                if(line.find("var") != std::string::npos) {
-                    library_dir.push_back(line.substr(line.find(' ') + 1, -1));
-
-                }else if(isLibs) {
-                    list_libs.push_back(line.substr(line.find('-') + 1, -1));
-                
-                }else if(line.find("libs") != std::string::npos) {
-                    isLibs = true;
-
-                }else {
-                    isLibrary = false;
-                    isLibs    = false;
-
-                }
-            }
-
-            if(line.find("deps_library") != std::string::npos) {
-                isLibrary = true;
-            }
-            // -----------------------------------------------------
-
 
             // Recuperer l'association entre variable et fichier ---
             if(isCompile){
