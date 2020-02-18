@@ -130,8 +130,10 @@ bool getConfig(std::string argv1) {
         }
     }
 
-    // On crée ou récupére le fichier de cache
-    std::fstream cacheFile("intermediate/.cache");
+
+    // Necessaire pour créer le fichier si besoin
+    std::fstream cacheFile;  
+    cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
     cacheFile.close();
     
 
@@ -144,6 +146,15 @@ bool getConfig(std::string argv1) {
     
     for (int i = 0; i < list_asso.size(); i++) {
         if(needCompiling(list_asso[i][1])){
+            // On calcule le SHA du fichier à ajouter
+            std::fstream fileToAdd(list_asso[i][1]);
+            std::string fileContent { 
+                std::istreambuf_iterator<char>(fileToAdd), std::istreambuf_iterator<char>() 
+            };
+
+            std::fstream cacheFile("intermediate/.cache",std::ios::app);
+            cacheFile << list_asso[i][1] + " " + calculateSHA(fileContent) << std::endl;
+            cacheFile.close();
 
             // Compilation des fichiers
             str = "g++ -c " + list_asso[i][1] + " -o intermediate/" + list_asso[i][0] + ".o";
@@ -205,41 +216,45 @@ bool needCompiling(std::string filename){
     bool out = true;
 
     // On récup ce qu'il ya ds cache
-    std::fstream cacheFile("intermediate/.cache");
-    std::string cacheContent { 
-        std::istreambuf_iterator<char>(cacheFile), std::istreambuf_iterator<char>() 
+    std::fstream cacheFile;
+    cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
+
+    // On récup le fichier 
+    std::fstream file(filename);
+    std::string fileContent { 
+        std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() 
     };
 
-    // On vérifie que le fichier est pas dans cache
-    if(cacheContent.find(filename) != std::string::npos){
-        // On récup le fichier 
-        std::fstream file(filename);
-        std::string fileContent { 
-            std::istreambuf_iterator<char>(cacheFile), std::istreambuf_iterator<char>() 
-        };
-
-         
-        // On vérifie que le hash a pas changé
-        std::string line;
-        std::string oldSHA;
-        while(getline(cacheFile, line)){
-            if(line.find(filename) != std::string::npos){
-                oldSHA = line.substr(line.find(filename)+filename.length()+1,-1);
+        
+    // On vérifie que le hash a pas changé
+    std::string line;
+    std::string oldSHA;
+    std::string updatedCache = "";
+    while(getline(cacheFile, line)){
+        if(line.find(filename) != std::string::npos){
+            oldSHA = line.substr(line.find(filename)+filename.length()+1,-1);
+            if(calculateSHA(fileContent) == oldSHA){
+                std::cout << "Le fichier " << filename << " est dejà compilé, ignoré" << std::endl;
+                out = false;
+                updatedCache += line+"\n";
             }
-        }
+            else{
+                std::cout << "Le fichier " << filename << " a été modifié. Recompilation ..." << std::endl;
 
-        if(calculateSHA(fileContent) == oldSHA){
-            out = false;
+            }
+
         }
         else{
-            // TODO: supprimer la ligne
+                updatedCache += line+"\n";
         }
-
-
     }
+            
 
+    cacheFile.close();
 
-
+    cacheFile.open("intermediate/.cache", std::ios::out);
+    cacheFile << updatedCache;
+    cacheFile.close();
 
     return out;
 }
