@@ -59,16 +59,8 @@ bool getConfig(std::string argv1) {
                 if(line.find("var") != std::string::npos) {
                     library_dir.push_back(checkSpace(line.substr(line.find(' ') + 1, -1)));
 
-                }else if(isLibs) {
-                    list_libs.push_back(checkSpace(line.substr(line.find('-') + 1, -1)));
-                
-                }else if(line.find("libs") != std::string::npos) {
-                    isLibs = true;
-
                 }else {
                     isLibrary = false;
-                    isLibs    = false;
-
                 }
             }
 
@@ -93,6 +85,21 @@ bool getConfig(std::string argv1) {
                 isInclude = true;
             }
             // -----------------------------------------------------
+
+            if(isLibs) {
+                if(line.find("-") != std::string::npos) {
+                    list_libs.push_back(checkSpace(line.substr(line.find('-') + 1, -1)));
+
+                }else {
+                    isLibs = false;
+                }
+            }
+
+            if(line.find("libs") != std::string::npos) {
+                isLibs = true;
+            }
+            // -----------------------------------------------------
+
             // Recuperer l'association entre variable et fichier ---
             if(isCompile){
                 if(line.find("-") != std::string::npos) {
