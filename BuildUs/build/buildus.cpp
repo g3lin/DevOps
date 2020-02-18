@@ -6,6 +6,18 @@
 #include <string>
 #include <vector>
 
+std::string checkSpace(std::string line) {
+    // Eviter les problemes d'espaces oublies
+    if(line.find(" ") != std::string::npos) {
+        std::string::iterator end_pos = std::remove(line.begin(), line.end(), ' ');
+        line.erase(end_pos, line.end());
+
+    }
+
+    return line;
+
+}
+
 bool getConfig(std::string argv1) {
     // Recuperer le chemin actuel
 	auto path = boost::filesystem::current_path();
@@ -36,9 +48,49 @@ bool getConfig(std::string argv1) {
         while(getline(config, line)){
             // Recuperer le nom de l'executable --------------------
             if(line.find("projet") != std::string::npos) {
-                std::cout << "nom de l'executable : " << line.substr(line.find(' ') + 1, -1) << std::endl;
+                std::cout << "nom de l'executable : " << line.substr(line.find(':') + 1, -1) << std::endl;
                 
-                noun_exe = line.substr(line.find(' ') + 1, -1).c_str();
+                noun_exe = checkSpace(line.substr(line.find(':') + 1, -1).c_str());
+
+            }
+            // -----------------------------------------------------
+
+            // Recuperer les includes ------------------------------
+            if(isInclude) {
+                if(line.find("var") != std::string::npos) {
+                    include_dir.push_back(checkSpace(line.substr(line.find(' ') + 1, -1)));
+     
+                }else {
+                    isInclude = false;
+                }
+                
+            }
+
+            if(line.find("deps_include") != std::string::npos) {
+                isInclude = true;
+            }
+            // -----------------------------------------------------
+
+            // Recuperer les libraires -----------------------------
+            if(isLibrary) {
+                if(line.find("var") != std::string::npos) {
+                    library_dir.push_back(checkSpace(line.substr(line.find(' ') + 1, -1)));
+
+                }else if(isLibs) {
+                    list_libs.push_back(checkSpace(line.substr(line.find('-') + 1, -1)));
+                
+                }else if(line.find("libs") != std::string::npos) {
+                    isLibs = true;
+
+                }else {
+                    isLibrary = false;
+                    isLibs    = false;
+
+                }
+            }
+
+            if(line.find("deps_library") != std::string::npos) {
+                isLibrary = true;
             }
             // -----------------------------------------------------
 
@@ -86,6 +138,12 @@ bool getConfig(std::string argv1) {
                 if(line.find("-") != std::string::npos) {
                     association[0] = line.substr(line.find('-') + 1, line.find(':') - 1);
                     association[1] = line.substr(line.find(':') + 1, -1);
+
+            // Recuperer l'association entre variable et fichier ---
+            if(isCompile){
+                if(line.find("-") != std::string::npos) {
+                    association[0] = checkSpace(line.substr(line.find('-') + 1, line.find(':') - 1));
+                    association[1] = checkSpace(line.substr(line.find(':') + 1, -1));
                     
                     std::cout << "liste : " << association[0] << " >> " << association[1] << std::endl;
 
@@ -113,7 +171,7 @@ bool getConfig(std::string argv1) {
                 while (buffer >> word) {
                     std::cout << "mot : " << word << std::endl;
 
-                    list_files.push_back(word);
+                    list_files.push_back(checkSpace(word));
 
                     std::cout << list_files.size() << std::endl;
                 }   
