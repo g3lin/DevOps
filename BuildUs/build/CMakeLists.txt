@@ -1,6 +1,8 @@
 add_library(build
     buildus.h
     buildus.cpp
+    argc.h
+    argc.cpp
     dummy.h 
     dummy.cpp    )
 if (UNIX)

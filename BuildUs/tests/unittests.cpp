@@ -7,6 +7,8 @@
 
 #include <dummy.h>
 
+#include <argc.h>
+
 
 TEST_CASE("is the world ok") {
 	REQUIRE(GetAnswerToLifeUniverseAndEverything() == 42);
@@ -14,25 +16,10 @@ TEST_CASE("is the world ok") {
 	REQUIRE(GetAnswerToLifeUniverseAndEverything() != 43);
 }
 
-/**
-TEST_CASE("Test commande 'init'") {
-	// Verifier si les fonctions s'executent bien
-	REQUIRE(getInitHelp() == true);
-	REQUIRE(setInit() == true);
-	
-	// Verifier si les dossiers/fichiers sont bien crees
-	REQUIRE(checkInit() == true);
-	
+TEST_CASE("Test du nombre d'arguements places en parametre") {
+	REQUIRE(getNbArgc(1) == false);
+	REQUIRE(getNbArgc(3) == false);
+	REQUIRE(getNbArgc(2) == true);
 }
 
-TEST_CASE("Test commande 'add'") {
-	// Verifier si les fonctions s'executent bien
-	REQUIRE(getAddHelp() == true);
 
-	const char* file_to_add = "test.txt";
-	REQUIRE(setAddFile(file_to_add) == true);
-
-	// Verifier le rapport entre les dossiers/fichiers creent et index
-	REQUIRE(checkAdd() == true);
-
-}*/
