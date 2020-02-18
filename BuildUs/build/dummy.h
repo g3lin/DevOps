@@ -1,5 +1,7 @@
 #pragma once
 
+// AB - pourquoi c'est encore ici?
+
 #include <boost/filesystem.hpp>
 
 int GetAnswerToLifeUniverseAndEverything();

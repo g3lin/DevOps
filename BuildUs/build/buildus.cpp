@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+// AB - pourquoi CheckSpace retourne un string?
+//  est-ce que c'est le bon nom à utiliser?
 std::string checkSpace(std::string line) {
     // Eviter les problemes d'espaces oublies
     if(line.find(" ") != std::string::npos) {
@@ -15,7 +17,7 @@ std::string checkSpace(std::string line) {
     }
 
     return line;
-
+    // AB saut de ligne innutile
 }
 
 bool getConfig(std::string argv1) {
@@ -23,10 +25,10 @@ bool getConfig(std::string argv1) {
 	auto path = boost::filesystem::current_path();
 
 	// Lire le fichier 'index'
-	std::ifstream config(argv1);
+	std::ifstream config(argv1); // config_file?
 
     // Variables de stockage
-    std::string noun_exe;
+    std::string noun_exe; // AB - le nom est louche - application_name serait meilleur
 
     std::vector<std::string> include_dir;
 
@@ -37,6 +39,8 @@ bool getConfig(std::string argv1) {
     std::vector< std::vector<std::string> > list_asso;
 
     std::vector<std::string> list_files;
+
+    // belle espacement des variables, ca se lit bien
 
     if(config) {
         std::string line;
@@ -157,13 +161,13 @@ bool getConfig(std::string argv1) {
     cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
     cacheFile.close();
     
-
+    // AB espace vide un peu trop intense
 
 
 
     // Compilation
-    std::string str;
-    const char *command;
+    std::string str; // AB - le nom ne veut rien dire
+    const char *command; // pourquoi le déclarer ici?
     
     for (int i = 0; i < list_asso.size(); i++) {
         if(needCompiling(list_asso[i][1])){
@@ -235,21 +239,21 @@ bool getConfig(std::string argv1) {
 
 
 bool needCompiling(std::string filename){
-    bool out = true;
+    bool out = true; // AB out? out quoi?
 
     // On récup ce qu'il ya ds cache
     std::fstream cacheFile;
     cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
 
     // On récup le fichier 
-    std::fstream file(filename);
+    std::fstream file(filename); // AB - fichier de quoi?
     std::string fileContent { 
         std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() 
     };
 
         
     // On vérifie que le hash a pas changé
-    std::string line;
+    std::string line; // AB - line quoi?
     std::string oldSHA;
     std::string updatedCache = "";
     while(getline(cacheFile, line)){
