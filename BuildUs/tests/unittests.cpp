@@ -20,6 +20,9 @@ TEST_CASE("Test du nombre d'arguements places en parametre") {
 	REQUIRE(getNbArgc(1) == false);
 	REQUIRE(getNbArgc(3) == false);
 	REQUIRE(getNbArgc(2) == true);
+
+	REQUIRE(checkArgv("test.txt") == false);
+	REQUIRE(checkArgv("test.buildus") == true);
 }
 
 

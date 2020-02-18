@@ -9,12 +9,9 @@ int main(int argc, char *argv[]) {
 
         //std::cout << "Extention du fichier : " << argv1.substr(argv1.find('.'), -1) << std::endl;
         
-        if(argv1.substr(argv1.find('.'), -1) == ".buildus") {
+        if(checkArgv(argv1)) {
             getConfig(argv1);
-        
-        }else {
-            std::cerr << "ERREUR : Mauvaise extention de fichier" << std::endl;
-
+            
         }
     }
     
