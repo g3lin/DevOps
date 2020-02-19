@@ -6,9 +6,7 @@
 #include <string>
 #include <vector>
 
-// AB - pourquoi CheckSpace retourne un string?
-//  est-ce que c'est le bon nom à utiliser?
-std::string checkSpace(std::string line) {
+std::string deleteSpaces(std::string line) {
     // Eviter les problemes d'espaces oublies
     if(line.find(" ") != std::string::npos) {
         std::string::iterator end_pos = std::remove(line.begin(), line.end(), ' ');
@@ -17,18 +15,17 @@ std::string checkSpace(std::string line) {
     }
 
     return line;
-    // AB saut de ligne innutile
 }
 
-bool getConfig(std::string argv1) {
+bool getConfig(std::string configFileName) {
     // Recuperer le chemin actuel
-	auto path = boost::filesystem::current_path();
+	const auto path = boost::filesystem::current_path();
 
 	// Lire le fichier 'index'
-	std::ifstream config(argv1); // config_file?
+	std::ifstream config(configFileName); 
 
     // Variables de stockage
-    std::string noun_exe; // AB - le nom est louche - application_name serait meilleur
+    std::string appName; 
 
     std::vector<std::string> include_dir;
 
@@ -40,7 +37,6 @@ bool getConfig(std::string argv1) {
 
     std::vector<std::string> list_files;
 
-    // belle espacement des variables, ca se lit bien
 
     if(config) {
         std::string line;
@@ -54,14 +50,14 @@ bool getConfig(std::string argv1) {
             if(line.find("projet") != std::string::npos) {
                 std::cout << "nom de l'executable : " << line.substr(line.find(':') + 1, -1) << std::endl;
                 
-                noun_exe = checkSpace(line.substr(line.find(':') + 1, -1).c_str());
+                appName = deleteSpaces(line.substr(line.find(':') + 1, -1).c_str());
 
             }
             // -----------------------------------------------------
             // Recuperer les libraires -----------------------------
             if(isLibrary) {
                 if(line.find("var") != std::string::npos) {
-                    library_dir.push_back(checkSpace(line.substr(line.find(' ') + 1, -1)));
+                    library_dir.push_back(deleteSpaces(line.substr(line.find(' ') + 1, -1)));
 
                 }else {
                     isLibrary = false;
@@ -92,7 +88,7 @@ bool getConfig(std::string argv1) {
 
             if(isLibs) {
                 if(line.find("-") != std::string::npos) {
-                    list_libs.push_back(checkSpace(line.substr(line.find('-') + 1, -1)));
+                    list_libs.push_back(deleteSpaces(line.substr(line.find('-') + 1, -1)));
 
                 }else {
                     isLibs = false;
@@ -107,8 +103,8 @@ bool getConfig(std::string argv1) {
             // Recuperer l'association entre variable et fichier ---
             if(isCompile){
                 if(line.find("-") != std::string::npos) {
-                    association[0] = checkSpace(line.substr(line.find('-') + 1, line.find(':') - 1));
-                    association[1] = checkSpace(line.substr(line.find(':') + 1, -1));
+                    association[0] = deleteSpaces(line.substr(line.find('-') + 1, line.find(':') - 1));
+                    association[1] = deleteSpaces(line.substr(line.find(':') + 1, -1));
                     
                     std::cout << "liste : " << association[0] << " >> " << association[1] << std::endl;
 
@@ -136,7 +132,7 @@ bool getConfig(std::string argv1) {
                 while (buffer >> word) {
                     std::cout << "mot : " << word << std::endl;
 
-                    list_files.push_back(checkSpace(word));
+                    list_files.push_back(deleteSpaces(word));
 
                     std::cout << list_files.size() << std::endl;
                 }   
@@ -160,14 +156,9 @@ bool getConfig(std::string argv1) {
     std::fstream cacheFile;  
     cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
     cacheFile.close();
-    
-    // AB espace vide un peu trop intense
-
-
 
     // Compilation
-    std::string str; // AB - le nom ne veut rien dire
-    const char *command; // pourquoi le déclarer ici?
+    std::string commandStr; 
     
     for (int i = 0; i < list_asso.size(); i++) {
         if(needCompiling(list_asso[i][1])){
@@ -182,12 +173,12 @@ bool getConfig(std::string argv1) {
             cacheFile.close();
 
             // Compilation des fichiers
-            str = "g++ -c " + list_asso[i][1] + " -o intermediate/" + list_asso[i][0] + ".o";
+            commandStr = "g++ -c " + list_asso[i][1] + " -o intermediate/" + list_asso[i][0] + ".o";
             for (int i = 0; i < include_dir.size(); i++) {
                 const char* envVar = std::getenv(include_dir[i].c_str());
                 if(envVar != NULL){
                     std::string strEnvVar = envVar;
-                    str += " -I"+strEnvVar;
+                    commandStr += " -I"+strEnvVar;
                 }
                 else{
                     std::cerr << "Impossible de trouver la variable d'environement " + include_dir[i] << std::endl;
@@ -195,24 +186,22 @@ bool getConfig(std::string argv1) {
                 }
             }
 
-            command = str.c_str();
-
-            std::cout << "ligne de commande : " << command << std::endl;
-            system(command);
+            std::cout << "ligne de commande : " << commandStr.c_str() << std::endl;
+            system(commandStr.c_str());
         }
 
     }
     
     // Compilation de l'executable
-    str = "g++ ";
+    commandStr = "g++ ";
     for (int i = 0; i < list_files.size(); i++) {
-        str += "intermediate/" + list_files[i] + ".o ";
+        commandStr += "intermediate/" + list_files[i] + ".o ";
     }
     for (int i = 0; i < library_dir.size(); i++) {
         const char* envVar = std::getenv(library_dir[i].c_str());
         if(envVar != NULL){
             std::string strEnvVar = envVar;
-            str += " -L"+strEnvVar;
+            commandStr += " -L"+strEnvVar;
         }
         else{
             std::cerr << "Impossible de trouver la variable d'environement " + library_dir[i] << std::endl;
@@ -220,15 +209,14 @@ bool getConfig(std::string argv1) {
         }
     }
     for (int i = 0; i < list_libs.size(); i++) {
-        str += " -l" + list_libs[i].substr(3,-1) ;
+        commandStr += " -l" + list_libs[i].substr(3,-1) ;
     }
 
-    str += " -o " + noun_exe;
+    commandStr += " -o " + appName;
     
-    command = str.c_str();
 
-    std::cout << "ligne de commande : " << command << std::endl;
-    system(command);
+    std::cout << "ligne de commande : " << commandStr.c_str() << std::endl;
+    system(commandStr.c_str());
 
     return true;
 
@@ -238,34 +226,34 @@ bool getConfig(std::string argv1) {
 
 
 
-bool needCompiling(std::string filename){
-    bool out = true; // AB out? out quoi?
+bool needCompiling(std::string filenameToCompile){
+    bool valReturn = true; 
 
     // On récup ce qu'il ya ds cache
     std::fstream cacheFile;
     cacheFile.open("intermediate/.cache",std::ios::in | std::ios::out);
 
     // On récup le fichier 
-    std::fstream file(filename); // AB - fichier de quoi?
+    std::fstream file(filenameToCompile); 
     std::string fileContent { 
         std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() 
     };
 
         
     // On vérifie que le hash a pas changé
-    std::string line; // AB - line quoi?
+    std::string line; 
     std::string oldSHA;
     std::string updatedCache = "";
     while(getline(cacheFile, line)){
-        if(line.find(filename) != std::string::npos){
-            oldSHA = line.substr(line.find(filename)+filename.length()+1,-1);
+        if(line.find(filenameToCompile) != std::string::npos){
+            oldSHA = line.substr(line.find(filenameToCompile)+filenameToCompile.length()+1,-1);
             if(calculateSHA(fileContent) == oldSHA){
-                std::cout << "Le fichier " << filename << " est dejà compilé, ignoré" << std::endl;
-                out = false;
+                std::cout << "Le fichier " << filenameToCompile << " est dejà compilé, ignoré" << std::endl;
+                valReturn = false;
                 updatedCache += line+"\n";
             }
             else{
-                std::cout << "Le fichier " << filename << " a été modifié. Recompilation ..." << std::endl;
+                std::cout << "Le fichier " << filenameToCompile << " a été modifié. Recompilation ..." << std::endl;
 
             }
 
@@ -282,7 +270,7 @@ bool needCompiling(std::string filename){
     cacheFile << updatedCache;
     cacheFile.close();
 
-    return out;
+    return valReturn;
 }
 
 

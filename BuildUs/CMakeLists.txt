@@ -5,7 +5,7 @@ project(GitUS
     DESCRIPTION "Client build")
 
 set(Boost_USE_STATIC_LIBS on)
-find_package(Boost 1.71.0 REQUIRED COMPONENTS iostreams filesystem zlib)
+find_package(Boost 1.71.0 REQUIRED COMPONENTS iostreams filesystem)
 			
 set(CXX_STANDARD 17)
 

@@ -2,14 +2,11 @@ add_library(build
     buildus.h
     buildus.cpp
     argc.h
-    argc.cpp
-    dummy.h 
-    dummy.cpp    )
+    argc.cpp   )
 if (UNIX)
 target_link_libraries(build 
     PUBLIC 
 		${Boost_LIBRARIES}
-		${ZLIB_LIBRARIES}
 )
 else ()
 target_link_libraries(build 
