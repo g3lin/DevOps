@@ -1,8 +1,8 @@
 add_library(build
     buildus.h
     buildus.cpp
-    argc.h
-    argc.cpp   )
+    utils.h
+    utils.cpp   )
 if (UNIX)
 target_link_libraries(build 
     PUBLIC 

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "argc.h"
+#include "utils.h"
 #include "buildus.h"
 
 int main(int argc, char *argv[]) {
@@ -16,24 +16,8 @@ int main(int argc, char *argv[]) {
 
         if (argv1 == "clean")
         {
-            // Code ci-dessous adapté de https://stackoverflow.com/questions/6935279/delete-all-txt-in-a-directory-with-c
-            boost::filesystem::directory_iterator end;
-            for(boost::filesystem::directory_iterator it("intermediate"); it != end; ++it)
-            {
-                try
-                {
-                    if(boost::filesystem::is_regular_file(it->status()) && ((it->path().extension().compare(".o") == 0) || (it->path().extension().compare(".cache") == 0)))
-                    {
-                        boost::filesystem::remove(it->path());
-                    }
-                }
-                catch(const std::exception &ex)
-                {
-                    std::cerr << "Le nettoyage a échoué" << std::endl;
-                    exit(1);
-
-                }
-            }
+            cleanIntermediate();
+            
             std::cout << "Dossier nettoyé" << std::endl;
             return(0); 
         }
@@ -64,6 +48,4 @@ int main(int argc, char *argv[]) {
     
     return 0;
 }
-
-
 

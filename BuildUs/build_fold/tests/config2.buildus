@@ -4,8 +4,8 @@ var: BOOST_INCLUDEDIR
 deps_library:
 var: BOOST_LIBRARYDIR
 libs:
--lib1
--lib2
+-libboost_regex
+-libboost_random
 compile:
 -f1:main.cpp
 -f2:util.cpp

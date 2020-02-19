@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "utils.h"
 
 std::string deleteSpaces(std::string line) {
     // Eviter les problemes d'espaces oublies
@@ -144,7 +145,7 @@ bool getConfig(std::string configFileName) {
 
 
     // Checke si le fichier des intermediaires existe et le cree sinon
-    if( !boost::filesystem::exists("intermediate/")){
+    if( !checkIfFileExists("intermediate/")){
         if(!boost::filesystem::create_directory("intermediate")){
             std::cout << "Fichier non créé" << std::endl;
             exit(1);
@@ -187,7 +188,11 @@ bool getConfig(std::string configFileName) {
             }
 
             std::cout << "ligne de commande : " << commandStr.c_str() << std::endl;
-            system(commandStr.c_str());
+            if(system(commandStr.c_str()) != 0){
+                std::cerr << "LA compilation a rencontée un problème " << std::endl;
+                exit(1);
+
+            }
         }
 
     }
@@ -216,7 +221,11 @@ bool getConfig(std::string configFileName) {
     
 
     std::cout << "ligne de commande : " << commandStr.c_str() << std::endl;
-    system(commandStr.c_str());
+    if (system(commandStr.c_str())!= 0){
+        std::cerr << "LA compilation a rencontée un problème " << std::endl;
+        exit(1);
+
+    }
 
     return true;
 
@@ -276,20 +285,4 @@ bool needCompiling(std::string filenameToCompile){
 
 
 
-std::string calculateSHA(const std::string string){
-    std::string SHAFinal = "";
 
-    boost::uuids::detail::sha1 sha;
-    sha.process_bytes(string.c_str(), string.length());
-
-    unsigned int hash[5];
-	sha.get_digest(hash);
-
-	std::stringstream stream;
-	for (int i = 0; i < 5; ++i) {
-		stream << std::hex << hash[i];
-	}
-	SHAFinal =  stream.str();
-
-    return SHAFinal;
-}

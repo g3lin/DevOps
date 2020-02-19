@@ -1,7 +1,6 @@
 #pragma once
-
 #include <boost/filesystem.hpp>
-#include <boost/uuid/detail/sha1.hpp>
+
 
 // AB - argv1 c'est quoi?
 // le nom du fichier?
