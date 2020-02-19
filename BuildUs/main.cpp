@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
             {
                 try
                 {
-                    if(boost::filesystem::is_regular_file(it->status()) && (it->path().extension().compare(".o") == 0))
+                    if(boost::filesystem::is_regular_file(it->status()) && ((it->path().extension().compare(".o") == 0) || (it->path().extension().compare(".cache") == 0)))
                     {
                         boost::filesystem::remove(it->path());
                     }
