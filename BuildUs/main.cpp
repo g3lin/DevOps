@@ -7,13 +7,13 @@ int main(int argc, char *argv[]) {
 
     try {
         if(getNbArgc(argc)) {
-            std::string argv1 = argv[1];
+            std::string argv1 = argv[1]; // AB pourquoi ca 
         }
         else{
             std::cerr << "Le programme a besoin d'un unique argument" << std::endl;
-            exit(1);
+            exit(1); // AB - return 1; ici est préférable
         }
-        std::string argv1 = argv[1];
+        std::string argv1 = argv[1]; // AB et ca
         //std::cout << argv[1] << std::endl;
 
         if (argv1 == "clean")
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
                 }
             }
             std::cout << "Dossier nettoyé" << std::endl;
-            exit(0);
+            exit(0); // AB - return 0 est préférable
         }
 
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
         }
     }
     catch(const std::exception &ex)
-        {
+        { // AB indentation
             std::cerr << "Erreur" << std::endl;
             exit(1);
 
