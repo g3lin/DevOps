@@ -24,4 +24,5 @@ build:
 test:
   stage: test
   script:
-    - ./BuildUs/build_fold/tests/buildtests
+    - cd BuildUs/build_fold/tests
+    - ./buildtests
