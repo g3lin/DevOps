@@ -1,11 +1,15 @@
 ﻿using System;
 
 using Docker.DotNet;
+using Docker.DotNet.Models;
 
 using System.Net;  
 using System.Net.Sockets;  
 using System.Text;  
+using System.Threading.Tasks;
 using System.Threading;
+
+using System.IO;
 
 
 /**
@@ -22,20 +26,36 @@ namespace worker
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             DockerClient client = new DockerClientConfiguration(
                 new Uri("unix:///var/run/docker.sock"))
             .CreateClient();
+
+            Task.Run(async () =>
+            {
+                await client.Images.CreateImageAsync(
+                new ImagesCreateParameters
+                {
+                    FromImage = "alpine",
+                    Tag = "3.11.5",
+                },
+                 new AuthConfig(), new Progress<JSONMessage>(), CancellationToken.None);
+
+
+            }).GetAwaiter().GetResult();
+
             
-            Console.WriteLine("Hello World!");
+
+            
+            
+            // Console.WriteLine("Hello World!");
         }
 
 
 
-        static void createContainer(DockerClient client){
-
-
+        static async void createContainer(DockerClient client){
+                        
         }
     }
 
