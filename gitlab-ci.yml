@@ -1,20 +1,6 @@
-image: gelina/igl
+image: docker:dind
 
 build:
   stage: build
-  script:
-    - cd BuildUs/build_fold
-    - cmake ..
-    - make
-  artifacts:
-    paths:
-      - BuildUs
-      - tests/buildtests
+  
      
-
-# run tests using the binary built before
-test:
-  stage: test
-  script:
-    - cd BuildUs/build_fold/tests
-    - ./buildtests
