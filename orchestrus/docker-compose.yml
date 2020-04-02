@@ -1,0 +1,39 @@
+version: '1.0'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - orchestrus
+    restart: unless-stopped
+
+
+  
+  orchestrus_core:
+    container_name: orchestrus-core
+    image: gelina/orchestrus-core
+    networks:
+      - orchestrus
+    restart: unless-stopped
+
+    
+
+  bdd_control:
+    container_name: bdd-controller
+    image: gelina/bdd-controller
+    ports:
+      - "4200:4200"
+    networks:
+      - orchestrus
+    restart: unless-stopped
+        
+
+networks:
+  orchestrus:
+    driver: bridge
