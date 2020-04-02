@@ -1,5 +1,5 @@
 build_images:
-  image: docker:dind
+  image: docker:18.09.7-dind
   stage: build
   script:
     - cd orchestrus
