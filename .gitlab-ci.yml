@@ -3,8 +3,11 @@ build_images:
   stage: build
   script:
     - cd orchestrus
-    - make pushWorker
-    - make pushBDD
+    - echo $(DOCKER_HUB_GELINA) |	docker login -u gelina --password-stdin
+    - docker build worker -t gelina/worker
+    - docker push gelina/worker
+    - docker build bdd-controller -t gelina/bdd-controller
+    - docker push gelina/bdd-controller
 
 test_BDD:
   image: gelina/bdd-controller
