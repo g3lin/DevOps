@@ -1,5 +1,4 @@
 
-
 build_images:
   image: docker:19.03.1
   variables:
@@ -16,14 +15,4 @@ build_images:
     - docker build bdd-controller -t gelina/bdd-controller
     - docker push gelina/bdd-controller
 
-test_BDD:
-  image: gelina/bdd-controller
-  stage: test
-  script:
-    - ls
 
-test_worker:
-  image: gelina/worker
-  stage: test
-  script:
-    - ls
