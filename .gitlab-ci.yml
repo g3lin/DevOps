@@ -3,7 +3,7 @@ build_images:
   stage: build
   script:
     - cd orchestrus
-    - echo $(DOCKER_HUB_GELINA) |	docker login -u gelina --password-stdin
+    - docker login -u gelina -p $DOCKER_HUB_GELINA
     - docker build worker -t gelina/worker
     - docker push gelina/worker
     - docker build bdd-controller -t gelina/bdd-controller
