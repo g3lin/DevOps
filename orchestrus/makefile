@@ -1,8 +1,24 @@
-all: worker
+all: runworker
 
+login:
+	echo $(DOCKER_HUB_GELINA) |	docker login -u gelina --password-stdin
 buildWorker: 
-	docker build worker -t worker
+	docker build worker -t gelina/worker
 
-worker: buildWorker
-	docker run -v /var/run/docker.sock:/var/run/docker.sock -it worker
+pushWorker:login buildWorker
+	docker push gelina/worker
+
+buildBDD: 
+	docker build bdd-controller -t gelina/bdd-controller
+
+pushBDD:login buildBDD
+	docker push gelina/bdd-controller
+
+runworker: buildWorker
+	docker run -v /var/run/docker.sock:/var/run/docker.sock -p 4242:4242 -it worker
+
+
+
+
+
 

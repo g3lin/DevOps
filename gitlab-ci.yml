@@ -1,6 +1,23 @@
-image: docker:dind
 
-build:
-  stage: build
+build_images:
+  image: docker:dind
+  stage: build_images
+  script:
+    - cd orchestrus
+    - make pushWorker
+    - make pushBDD
+
+test_BDD:
+  image: gelina/bdd-controller
+  stage: test_BDD
+  script:
+    - ls
+
+test_worker:
+  image: gelina/worker
+  stage: test_worker
+  script:
+    - ls
+
   
      
