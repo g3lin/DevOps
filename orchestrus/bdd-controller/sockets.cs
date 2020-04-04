@@ -12,7 +12,7 @@ https://docs.microsoft.com/fr-fr/dotnet/framework/network-programming/asynchrono
 **/
 
 
-namespace worker
+namespace bdd_controller
 {
 
     public class StateObject {  
@@ -39,7 +39,7 @@ namespace worker
             // running the listener is "host.contoso.com".  
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             IPAddress ipAddress = ipHostInfo.AddressList[0];  
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 4242);  
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 4200);  
     
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,  
@@ -55,7 +55,7 @@ namespace worker
                     allDone.Reset();  
     
                     // Start an asynchronous socket to listen for connections.  
-                    Console.WriteLine("Worker waiting for a socket connection...");  
+                    Console.WriteLine("BDD controller waiting for a socket connection...");  
                     listener.BeginAccept(
                         new AsyncCallback(AcceptCallback),  
                         listener );  
@@ -114,7 +114,7 @@ namespace worker
                         content.Length, content ); 
 
                     string rep = Program.parseCommand(content) ;
-
+                    
                     // Echo the data back to the client.  
                     Send(handler, rep);  
                 } else {  

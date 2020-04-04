@@ -31,7 +31,7 @@ namespace worker
             .CreateClient();
 
             SocketsManager socket = new SocketsManager();
-            //SocketsManager.StartListening();
+            SocketsManager.StartListening();
 
             // Pull de l'image
             ImagesCreateParameters image = new ImagesCreateParameters
@@ -42,6 +42,12 @@ namespace worker
             await createContainer(client, image);
             bool status = await startContainer(client, "hello-world", new string[0]);
             Console.WriteLine(status.ToString());
+        }
+
+        public static string parseCommand(string content){
+            string rep = "";
+
+            return content;
         }
 
 

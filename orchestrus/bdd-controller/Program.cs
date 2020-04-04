@@ -26,6 +26,14 @@ namespace bdd_controller
             await using (var reader = await cmd.ExecuteReaderAsync())
                 while (await reader.ReadAsync())
                     Console.WriteLine(reader.GetString(0));
-                    }
-                }
+        }
+
+
+        public static string parseCommand(string content){
+            string rep = "";
+
+            return rep;
+        }
+
+    }
 }

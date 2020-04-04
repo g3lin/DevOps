@@ -4,7 +4,8 @@ set -e
 psql -v ON_ERROR_STOP=1 --username "postgres" --dbname 'IGL601' <<-EOSQL
     CREATE TABLE worker (
         ip VARCHAR (15) PRIMARY KEY,
-        port VARCHAR (4)
+        port VARCHAR (4),
+        status BOOLEAN 
     );
 
     CREATE TABLE image (
