@@ -3,10 +3,11 @@ version: '1.0'
 services:
   postgres:
     container_name: postgres_container
-    image: postgres
+    image: gelina/postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: IGL601
     ports:
       - "5432:5432"
     networks:

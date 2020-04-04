@@ -14,6 +14,12 @@ buildBDD:
 pushBDD:login buildBDD
 	docker push gelina/bdd-controller
 
+buildPostgres: 
+	docker build postgres -t gelina/postgres
+
+pushPostgres:buildPostgres
+	docker push gelina/postgres
+
 runworker: buildWorker
 	docker run -v /var/run/docker.sock:/var/run/docker.sock -p 4242:4242 -it worker
 
