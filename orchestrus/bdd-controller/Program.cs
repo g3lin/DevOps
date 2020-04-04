@@ -8,7 +8,8 @@ namespace bdd_controller
     {
         static async Task Main(string[] args)
         {
-            var connString = "Host=myserver;Username=mylogin;Password=mypass;Database=mydatabase";
+            string pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+            var connString = "Host=postgres;Username=postgres;Password="+pgPassword+";Database=IGL601";
 
             await using var conn = new NpgsqlConnection(connString);
             await conn.OpenAsync();
