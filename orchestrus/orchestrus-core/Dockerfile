@@ -6,7 +6,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /orchestrus-core
 COPY --from=build-env /orchestrus-core/out .
-ENTRYPOINT ["dotnet", "aspnetcoreapp.dll"]
+ENTRYPOINT ["dotnet", "orchestrus-core.dll"]

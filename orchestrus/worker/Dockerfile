@@ -6,7 +6,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /worker
 COPY --from=build-env /worker/out .
-ENTRYPOINT ["dotnet", "aspnetcoreapp.dll"]
+ENTRYPOINT ["dotnet", "worker.dll"]
