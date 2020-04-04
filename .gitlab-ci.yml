@@ -10,10 +10,16 @@ build_images:
   script:
     - cd orchestrus
     - docker login -u gelina -p $DOCKER_HUB_GELINA
+
     - docker build worker -t gelina/worker
     - docker push gelina/worker
+
     - docker build bdd-controller -t gelina/bdd-controller
     - docker push gelina/bdd-controller
+
+    - docker build orchestrus-core -t gelina/orchestrus-core
+    - docker push gelina/orchestrus-core
+
     - docker build postgres -t gelina/postgres
     - docker push gelina/postgres
 

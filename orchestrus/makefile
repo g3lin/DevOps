@@ -14,6 +14,12 @@ buildBDD:
 pushBDD:login buildBDD
 	docker push gelina/bdd-controller
 
+buildCore: 
+	docker build orchestrus-core -t gelina/orchestrus-core
+
+pushCore:buildCore
+	docker push gelina/orchestrus-core
+
 buildPostgres: 
 	docker build postgres -t gelina/postgres
 
