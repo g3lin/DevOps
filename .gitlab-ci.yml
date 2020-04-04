@@ -14,5 +14,7 @@ build_images:
     - docker push gelina/worker
     - docker build bdd-controller -t gelina/bdd-controller
     - docker push gelina/bdd-controller
+    - docker build postgres -t gelina/postgres
+    - docker push gelina/postgres
 
 
