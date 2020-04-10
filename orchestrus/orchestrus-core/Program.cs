@@ -8,6 +8,10 @@ namespace orchestrus_core
 {
     class Program
     {
+        private static string DB_IP = "bdd-controller";
+        private static int DB_PORT = 4200;
+
+
         static void Main(string[] args)
         {
             Console.WriteLine("Démarrage du coeur d'orchestrus");
@@ -70,6 +74,90 @@ namespace orchestrus_core
 
 
         
+
+        static string listWorkerOnDB(){
+            string JSONRequest = @"{""request"":""DBListWorkers""}";
+            string formattedJSONReq = JSONRequest + "\n\n";
+            try
+            {
+                string rep = sendMessage(DB_IP,DB_PORT,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi à BDDController: "+e.ToString());
+            }
+            return "";
+
+        }
+
+
+        static string updateWorkerOnDB(string workerIp, int workerPort, Boolean workerStatus){
+            string JSONRequest = @"{""request"":""DBUpdateWorker"",""ip"":""{0}"",""workerPort"":{1},""status"":{2}}";
+            string formattedJSONReq = String.Format(JSONRequest,workerIp,workerPort,workerStatus);
+            formattedJSONReq += "\n\n";
+            try
+            {
+                string rep = sendMessage(DB_IP,DB_PORT,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi à BDDController: "+e.ToString());
+            }
+            return "";
+
+        }
+
+
+
+
+        static string ListImagesOnWorkerDB(string workerIp, int workerPort){
+            string JSONRequest = @"{""request"":""DBListImages"",""ip"":""{0}"",""workerPort"":{1} }";
+            string formattedJSONReq = String.Format(JSONRequest,workerIp,workerPort);
+            formattedJSONReq += "\n\n";
+            try
+            {
+                string rep = sendMessage(DB_IP,DB_PORT,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi à BDDController: "+e.ToString());
+            }
+            return "";
+
+        }
+
+
+
+        static string updateImageOnDB(string workerIp, int workerPort, string IDImage, string nomImage, int[] imagePorts){
+            string JSONRequest = @"{""request"":""DBUpdateWorker"",""ip"":""{0}"",""workerPort"":{1},""idImage"":{2},""nomImage"":{3},""ImagePorts"":[";
+            int i = 0;
+            // Ajout des ports à ouvrir éventuels
+            for (i = 0; i < imagePorts.Length; i++)
+            {
+                JSONRequest += imagePorts[i]+",";
+            }
+            if (i > 0)
+                JSONRequest.Remove(JSONRequest.Length -1);
+            JSONRequest += "]}";
+            string formattedJSONReq = String.Format(JSONRequest,workerIp,workerPort,IDImage, nomImage);
+            formattedJSONReq += "\n\n";
+            try
+            {
+                string rep = sendMessage(DB_IP,DB_PORT,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi à BDDController: "+e.ToString());
+            }
+            return "";
+
+        }
+
+
 
 
 
