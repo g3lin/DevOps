@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 
+
 namespace orchestrus_core
 {
     class Program
@@ -10,8 +11,65 @@ namespace orchestrus_core
         static void Main(string[] args)
         {
             Console.WriteLine("Démarrage du coeur d'orchestrus");
-            sendMessage("worker",4242,"TEST");
+            sendMessage("worker",4242,"TEST\nseconde ligne\n\n");
         }
+
+        static string dlImageOnWorkerMachine(string workerIP,int workerPort,string imageName){
+            string JSONRequest = @"{""request"":""imageDL"",""imageName"":""{0}""}";
+            string formattedJSONReq = String.Format(JSONRequest,imageName);
+            formattedJSONReq += "\n\n";
+            try
+            {
+                string rep = sendMessage(workerIP,workerPort,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi: "+e.ToString());
+            }
+            return "";
+        }
+
+
+
+        static string launchOnWorkerMachine(string workerIP,int workerPort,string imageName, int[] ports, string[] envs){
+            string JSONRequest = @"{""request"":""imageLaunch"",""imageName"":""{0}"",""portsToOpen"":[";
+            int i = 0;
+            // Ajout des ports à ouvrir éventuels
+            for (i = 0; i < ports.Length; i++)
+            {
+                JSONRequest += ports[i]+",";
+            }
+            if (i > 0)
+                JSONRequest.Remove(JSONRequest.Length -1);
+
+            // Ajout des variables d'env eventuelles
+            i = 0;
+            for (i = 0; i < envs.Length; i++)
+            {
+                JSONRequest += envs[i]+",";
+            }
+            if (i > 0)
+                JSONRequest.Remove(JSONRequest.Length -1);
+            JSONRequest += "]}";
+
+            string formattedJSONReq = String.Format(JSONRequest,imageName);
+            formattedJSONReq += "\n\n";
+            try
+            {
+                string rep = sendMessage(workerIP,workerPort,formattedJSONReq);
+                return rep;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("une erreur est survenue dans l'envoi: "+e.ToString());
+            }
+            return "";
+
+        }
+
+
+        
 
 
 

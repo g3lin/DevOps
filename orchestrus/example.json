@@ -1,0 +1,99 @@
+[
+{
+    "request":"imageDL",
+    "imageName":"hello-world"
+},
+
+{
+    "request":"responseWorker",
+    "status": true
+},
+
+
+
+
+{
+    "request":"imageLaunch",
+    "imageName":"hello-world",
+    "portsToOpen":[1234,7777],
+    "envVar":["VAR=pass"]
+},
+
+{
+    "request":"responseWorker",
+    "status": true,
+    "idImage":"62dd9a004a5a"
+},
+
+
+
+
+
+
+{
+    "request":"DBListWorkers"
+},
+
+{
+    "request":"responseDB",
+    "workers":[
+        {"ip":"192.168.1.1",
+         "workerPort":1234,
+         "status":true
+        }
+    ]
+},
+
+
+
+
+{
+    "request":"DBUpdateWorker",
+    "ip":"192.168.1.1",
+    "workerPort":1234,
+    "status":true
+},
+
+
+
+{
+    "request":"responseDB",
+    "workers":true
+},
+
+
+
+
+
+
+{
+    "request":"DBListImages",
+    "ipWorker":"192.168.1.1",
+    "workerPort":1234
+},
+
+{
+    "request":"responseDB",
+    "images":[
+        {"idImage":"62dd9a004a5a",
+         "nomImage":"gelina/orchestrus-core",
+         "ImagePorts":[1234,7777]
+        }
+    ]
+},
+
+
+
+
+{
+    "request":"DBUpdateImage",
+    "ipWorker":"192.168.1.1",
+    "workerPort":1234,
+    "idImage":"62dd9a004a5a",
+    "nomImage":"gelina/orchestrus-core",
+    "ImagePorts":[1234,7777]
+}
+
+
+
+]
