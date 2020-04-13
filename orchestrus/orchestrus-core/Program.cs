@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;  
 
 
+
 namespace orchestrus_core
 {
     class Program
@@ -15,7 +16,7 @@ namespace orchestrus_core
         static void Main(string[] args)
         {
             Console.WriteLine("Démarrage du coeur d'orchestrus");
-            sendMessage("worker",4242,"TEST\nseconde ligne\n\n");
+            listWorkerOnDB();
         }
 
         static string dlImageOnWorkerMachine(string workerIP,int workerPort,string imageName){

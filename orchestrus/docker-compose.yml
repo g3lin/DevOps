@@ -28,6 +28,8 @@ services:
   bdd_control:
     container_name: bdd-controller
     image: gelina/bdd-controller
+    environment: 
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "4200:4200"
     networks:

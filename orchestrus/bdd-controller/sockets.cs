@@ -28,12 +28,14 @@ namespace bdd_controller
     
     public class SocketsManager {  
         // Thread signal.  
-        public static ManualResetEvent allDone = new ManualResetEvent(false);  
+        public static ManualResetEvent allDone = new ManualResetEvent(false); 
+        public Program aMain ;
     
-        public SocketsManager() {  
+        public SocketsManager(Program main) { 
+            aMain = main; 
         }  
     
-        public static void StartListening() {  
+        public void StartListening() {  
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".  
@@ -73,7 +75,7 @@ namespace bdd_controller
     
         }  
     
-        public static void AcceptCallback(IAsyncResult ar) {  
+        public void AcceptCallback(IAsyncResult ar) {  
             // Signal the main thread to continue.  
             allDone.Set();  
     
@@ -88,7 +90,7 @@ namespace bdd_controller
                 new AsyncCallback(ReadCallback), state);  
         }  
     
-        public static void ReadCallback(IAsyncResult ar) {  
+        public void ReadCallback(IAsyncResult ar) {  
             String content = String.Empty;  
     
             // Retrieve the state object and the handler socket  
@@ -107,13 +109,13 @@ namespace bdd_controller
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();  
-                if (content.IndexOf("<EOF>") > -1) {  
+                if (content.IndexOf("\n\n") > -1) {  
                     // All the data has been read from the
                     // client. Display it on the console.  
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",  
                         content.Length, content ); 
 
-                    string rep = Program.parseCommand(content) ;
+                    string rep = aMain.parseCommand(content) ;
                     
                     // Echo the data back to the client.  
                     Send(handler, rep);  
