@@ -23,7 +23,7 @@ namespace bdd_controller
         private void Main(){
 
             string pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
-            var connString = "Host=postgres;Username=postgres;Password="+pgPassword+";Database=IGL601";
+            var connString = "Host=postgres_container;Username=postgres;Password="+pgPassword+";Database=IGL601";
             conn = new NpgsqlConnection(connString);
 
         }
