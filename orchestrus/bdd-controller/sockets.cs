@@ -109,7 +109,7 @@ namespace bdd_controller
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();  
-                if (content.IndexOf("\n\n") > -1) {  
+                if (content.IndexOf("\n") > -1) {  
                     // All the data has been read from the
                     // client. Display it on the console.  
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",  

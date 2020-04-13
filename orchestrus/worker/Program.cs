@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
+using System.Text.Json;
+
 using System.IO;
 
 
@@ -46,11 +48,45 @@ namespace worker
 
         public static string parseCommand(string content){
             string rep = "";
+            try
+            {
+                JsonDocument document = JsonDocument.Parse(content);
+                JsonElement root = document.RootElement;
+                JsonElement request = root.GetProperty("request");
 
-            return content;
+                if(request.ToString().Equals("imageLaunch"))
+                    rep = imageLaunch(root);
+                
+                else if(request.ToString().Equals("imageDL"))
+                    rep = imageDL(root);
+                
+
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+
+
+            return rep;
+        }
+
+        static private string imageLaunch(JsonElement root){
+            String rep = "";
+
+            return rep;
         }
 
 
+        static private string imageDL(JsonElement root){
+            String rep = "";
+
+            return rep;
+        }
+
+
+        // PARTIE GESTION DOCKER
 
         static async Task createContainer(DockerClient client, ImagesCreateParameters image){
             await client.Images.CreateImageAsync(image, new AuthConfig(), new Progress<JSONMessage>(), CancellationToken.None);
