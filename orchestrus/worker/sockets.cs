@@ -27,13 +27,15 @@ namespace worker
     }  
     
     public class SocketsManager {  
+        Program aProg;
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);  
     
-        public SocketsManager() {  
+        public SocketsManager(Program prog) { 
+            aProg = prog; 
         }  
     
-        public static void StartListening() {  
+        public void StartListening() {  
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".  
@@ -73,7 +75,7 @@ namespace worker
     
         }  
     
-        public static void AcceptCallback(IAsyncResult ar) {  
+        public void AcceptCallback(IAsyncResult ar) {  
             // Signal the main thread to continue.  
             allDone.Set();  
     
@@ -88,7 +90,7 @@ namespace worker
                 new AsyncCallback(ReadCallback), state);  
         }  
     
-        public static void ReadCallback(IAsyncResult ar) {  
+        public void ReadCallback(IAsyncResult ar) {  
             String content = String.Empty;  
     
             // Retrieve the state object and the handler socket  
@@ -113,7 +115,7 @@ namespace worker
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",  
                         content.Length, content ); 
 
-                    string rep = Program.parseCommand(content) ;
+                    string rep = aProg.parseCommand(content) ;
 
                     // Echo the data back to the client.  
                     Send(handler, rep);  

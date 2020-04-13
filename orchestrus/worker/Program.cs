@@ -3,6 +3,8 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 
+using System.Collections.Generic;
+
 using System.Net;  
 using System.Net.Sockets;  
 using System.Text;  
@@ -23,30 +25,39 @@ https://github.com/microsoft/Docker.DotNet
 
 namespace worker
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        DockerClient client;
+
+        static void Main(string[] args)
         {
+            Program prog = new Program();
+            prog.Main();
+
+            SocketsManager socket = new SocketsManager(prog);
+            socket.StartListening();
+
+        }
+
+
+        private void Main(){
             // Création du client Docker
-            DockerClient client = new DockerClientConfiguration(
+            client = new DockerClientConfiguration(
                 new Uri("unix:///var/run/docker.sock"))
             .CreateClient();
 
-            SocketsManager socket = new SocketsManager();
-            SocketsManager.StartListening();
-
-            // Pull de l'image
-            ImagesCreateParameters image = new ImagesCreateParameters
-            {
-                FromImage = "hello-seattle",
-                Tag = "linux",
-            };
-            await createContainer(client, image);
-            bool status = await startContainer(client, "hello-world", new string[0]);
-            Console.WriteLine(status.ToString());
+            // // Pull de l'image
+            // ImagesCreateParameters image = new ImagesCreateParameters
+            // {
+            //     FromImage = "hello-seattle",
+            //     Tag = "linux",
+            // };
+            // await createContainer(client, image);
+            // bool status = await startContainer(client, "hello-world", new string[0]);
+            // Console.WriteLine(status.ToString());
         }
 
-        public static string parseCommand(string content){
+        public string parseCommand(string content){
             string rep = "";
             try
             {
@@ -55,10 +66,10 @@ namespace worker
                 JsonElement request = root.GetProperty("request");
 
                 if(request.ToString().Equals("imageLaunch"))
-                    rep = imageLaunch(root);
+                    rep = imageLaunch(root).GetAwaiter().GetResult();
                 
                 else if(request.ToString().Equals("imageDL"))
-                    rep = imageDL(root);
+                    rep = imageDL(root).GetAwaiter().GetResult();
                 
 
             }
@@ -72,15 +83,47 @@ namespace worker
             return rep;
         }
 
-        static private string imageLaunch(JsonElement root){
+        private async Task<string> imageLaunch(JsonElement root){
             String rep = "";
+
+            try {
+                IDictionary<string, EmptyStruct> portDict = new Dictionary<string, EmptyStruct>();
+                IList<string> envList = new List<string>();
+                
+                String imageName = root.GetProperty("imageName").ToString();
+                
+                
+                Config parameters = new Config{
+                    Image = imageName,
+                    Env = envList,
+                    ExposedPorts = portDict
+                };
+
+                await startContainer(imageName,parameters);
+            }
+            catch(System.Exception e){
+                Console.WriteLine("Un problème est survenu pendant le lancement de l'image: "+e.ToString());
+            }
 
             return rep;
         }
 
 
-        static private string imageDL(JsonElement root){
+        private async Task<string> imageDL(JsonElement root){
             String rep = "";
+
+            try
+            {
+                ImagesCreateParameters image = new ImagesCreateParameters{
+                    FromImage = root.GetProperty("imageName").ToString()
+                };
+                await createContainer(image);
+                
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("Problème en téléchargeant l'image: " + e.ToString());
+            }
 
             return rep;
         }
@@ -88,20 +131,12 @@ namespace worker
 
         // PARTIE GESTION DOCKER
 
-        static async Task createContainer(DockerClient client, ImagesCreateParameters image){
+        async Task createContainer( ImagesCreateParameters image){
             await client.Images.CreateImageAsync(image, new AuthConfig(), new Progress<JSONMessage>(), CancellationToken.None);
         }
 
-        static async Task<bool> startContainer(DockerClient client, string imageName, string[] dockerParams){
+        async Task<bool> startContainer(string imageName, Config parameters){
             // On va d'abbord creer un conteneur avec les bons paramètres
-            var parameters = new Config {
-              Image = imageName,              
-              ArgsEscaped = false,
-              AttachStderr = false,
-              AttachStdin = false,
-              AttachStdout = true,
-              Cmd = dockerParams
-            };
             CreateContainerResponse response = await client.Containers.CreateContainerAsync(new CreateContainerParameters(parameters));
             
             //Et ensuite lancer ce qu'on a créé
