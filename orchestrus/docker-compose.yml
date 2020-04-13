@@ -21,6 +21,9 @@ services:
     image: gelina/orchestrus-core
     networks:
       - orchestrus
+    depends_on:
+        - bdd_control
+        - postgres
     restart: unless-stopped
 
     
@@ -34,6 +37,8 @@ services:
       - "4200:4200"
     networks:
       - orchestrus
+    depends_on:
+        - postgres
     restart: unless-stopped
         
 

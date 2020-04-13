@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Npgsql;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace bdd_controller
 {
@@ -16,7 +14,7 @@ namespace bdd_controller
             
             Program main = new Program();
             SocketsManager sock = new SocketsManager(main);
-            main.Main();
+            sock.StartListening();
 
         }
 
@@ -40,6 +38,9 @@ namespace bdd_controller
 
                 if(request.ToString().Equals("DBListImages"))
                     rep = DBListImages(root);
+                
+                else if(request.ToString().Equals("DBLisrWorkers"))
+                    rep = DBListWorkers(root);
                 
                 else if(request.ToString().Equals("DBUpdateImage"))
                     rep = DBUpdateImage(root).ToString();
@@ -69,6 +70,16 @@ namespace bdd_controller
             // }
 
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT some_field FROM data", conn);
+            var reader = cmd.ExecuteReader();
+            reader.Read();
+            return reader.GetString(0);
+        
+        }
+
+
+        private string DBListWorkers(JsonElement root){
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM worker WHERE", conn);
             var reader = cmd.ExecuteReader();
             reader.Read();
             return reader.GetString(0);

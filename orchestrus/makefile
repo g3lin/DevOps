@@ -5,13 +5,13 @@ login:
 buildWorker: 
 	docker build worker -t gelina/worker
 
-pushWorker:login buildWorker
+pushWorker: buildWorker
 	docker push gelina/worker
 
 buildBDD: 
 	docker build bdd-controller -t gelina/bdd-controller
 
-pushBDD:login buildBDD
+pushBDD: buildBDD
 	docker push gelina/bdd-controller
 
 buildCore: 
