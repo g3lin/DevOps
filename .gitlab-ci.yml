@@ -23,4 +23,25 @@ build_images:
     - docker build postgres -t gelina/postgres
     - docker push gelina/postgres
 
+test_core:
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+  stage: test
+  script:
+    - cd orchestrus/orchestrus-core
+    - dotnet test
 
+
+test_bdd:
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+  stage: test
+  script:
+    - cd orchestrus/bdd-controller
+    - dotnet test
+
+
+test_worker:
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+  stage: test
+  script:
+    - cd orchestrus/worker
+    - dotnet test
