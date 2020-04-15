@@ -15,7 +15,7 @@ namespace bdd_controller
             Program main = new Program();
             main.Main();
             SocketsManager sock = new SocketsManager(main);
-            sock.StartListening();
+            sock.StartListening(); 
 
         }
 
@@ -83,7 +83,7 @@ namespace bdd_controller
             //     return reader.GetString(0);
             // }
 
-            using(NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM image WHERE worker_ip = @wip ;", conn)){
+            using(NpgsqlCommand cmd = new NpgsqlCommand("SELECT (name,docker_id, worker_ip, worker_port, image_ports) FROM image WHERE worker_ip = @wip ;", conn)){
                 cmd.Parameters.AddWithValue("wip", root.GetProperty("ipWorker").ToString());
                 using(var reader = cmd.ExecuteReader()){
                     reader.Read();
@@ -98,8 +98,22 @@ namespace bdd_controller
 
             using( NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM worker;", conn)){
                 using (var reader = cmd.ExecuteReader()){
-                    reader.Read();
-                    return reader.GetString(0);
+                    
+                    
+                    string rep = @"{""request"":""responseDB"",""workers"":[";
+                    try
+                    {
+                        reader.Read();
+                        rep += @"{""ip"":"""+reader.GetString(0)+@""",""workerPort"":"""+reader.GetString(1)+@""",""status"":"+reader.GetBoolean(2).ToString()+@"}";
+                    }
+                    catch (System.Exception e)
+                    {
+                        Console.WriteLine("Aucun résulat"+e.ToString());
+                    }
+                    while(reader.Read())
+                        rep += @",{""ip"":"""+reader.GetString(0)+@""",""workerPort"":"""+reader.GetString(1)+@""",""status"":"+reader.GetBoolean(2).ToString()+@"}";
+                    rep += "]}";
+                    return rep;
                 }
             }
         

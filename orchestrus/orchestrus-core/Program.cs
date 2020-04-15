@@ -161,6 +161,7 @@ namespace orchestrus_core
 
 
             string rep = ListImagesOnWorkerDB(ip,port);
+            Console.WriteLine("name,docker_id, worker_ip, worker_port, image_ports");
             Console.WriteLine(rep);
 
         }
