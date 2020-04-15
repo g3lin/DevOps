@@ -193,7 +193,7 @@ namespace orchestrus_core
                 JSONRequest += ports[i]+",";
             }
             if (i > 0)
-                JSONRequest.Remove(JSONRequest.Length -1);
+                JSONRequest = JSONRequest.Remove(JSONRequest.Length -1);
 
             // Ajout des variables d'env eventuelles
             i = 0;
@@ -202,7 +202,7 @@ namespace orchestrus_core
                 JSONRequest += envs[i]+",";
             }
             if (i > 0)
-                JSONRequest.Remove(JSONRequest.Length -1);
+                JSONRequest = JSONRequest.Remove(JSONRequest.Length -1);
             JSONRequest += "]}}";
 
             string formattedJSONReq = String.Format(JSONRequest,imageName);
@@ -210,6 +210,7 @@ namespace orchestrus_core
             try
             {
                 string rep = sendMessage(workerIP,workerPort,formattedJSONReq);
+                updateImageOnDB(workerIP,workerPort,"placeholder",imageName, ports);
                 return rep;
             }
             catch (System.Exception e)
@@ -264,7 +265,7 @@ namespace orchestrus_core
 
 
         static string ListImagesOnWorkerDB(string workerIp, int workerPort){
-            string JSONRequest = @"{{""request"":""DBListImages"",""ip"":""{0}"",""workerPort"":{1} }}";
+            string JSONRequest = @"{{""request"":""DBListImages"",""ipWorker"":""{0}"",""workerPort"":{1} }}";
             string formattedJSONReq = String.Format(JSONRequest,workerIp,workerPort);
             formattedJSONReq += "\n";
             try
@@ -283,7 +284,7 @@ namespace orchestrus_core
 
 
         static string updateImageOnDB(string workerIp, int workerPort, string IDImage, string nomImage, int[] imagePorts){
-            string JSONRequest = @"{{""request"":""DBUpdateWorker"",""ip"":""{0}"",""workerPort"":{1},""idImage"":{2},""nomImage"":{3},""ImagePorts"":[";
+            string JSONRequest = @"{{""request"":""DBUpdateImage"",""ip"":""{0}"",""workerPort"":{1},""idImage"":""{2}"",""nomImage"":""{3}"",""ImagePorts"":[";
             int i = 0;
             // Ajout des ports à ouvrir éventuels
             for (i = 0; i < imagePorts.Length; i++)
@@ -291,7 +292,7 @@ namespace orchestrus_core
                 JSONRequest += imagePorts[i]+",";
             }
             if (i > 0)
-                JSONRequest.Remove(JSONRequest.Length -1);
+                JSONRequest = JSONRequest.Remove(JSONRequest.Length -1);
             JSONRequest += "]}}";
             string formattedJSONReq = String.Format(JSONRequest,workerIp,workerPort,IDImage, nomImage);
             formattedJSONReq += "\n";

@@ -104,7 +104,7 @@ namespace worker
             }
             catch(System.Exception e){
                 Console.WriteLine("Un problème est survenu pendant le lancement de l'image: "+e.ToString());
-                rep = @"{""request"":""responseWorker"",""status"": true}";
+                rep = @"{""request"":""responseWorker"",""status"": false}";
             }
 
             return rep;
