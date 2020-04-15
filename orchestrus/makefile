@@ -1,4 +1,4 @@
-all: runworker
+all: buildWorker buildCore buildBDD buildPostgres
 
 login:
 	echo $(DOCKER_HUB_GELINA) |	docker login -u gelina --password-stdin

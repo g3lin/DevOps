@@ -21,6 +21,8 @@ services:
     image: gelina/orchestrus-core
     networks:
       - orchestrus
+    stdin_open: true
+    tty: true
     depends_on:
         - bdd_control
         - postgres

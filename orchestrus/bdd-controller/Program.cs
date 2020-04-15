@@ -13,6 +13,7 @@ namespace bdd_controller
         {
             
             Program main = new Program();
+            main.Main();
             SocketsManager sock = new SocketsManager(main);
             sock.StartListening();
 
@@ -23,6 +24,8 @@ namespace bdd_controller
             string pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
             var connString = "Host=postgres_container;Username=postgres;Password="+pgPassword+";Database=IGL601";
             conn = new NpgsqlConnection(connString);
+            conn.Open();
+            Console.WriteLine("Etat de la connection BDD: "+conn.State.ToString());
 
         }
 
@@ -51,10 +54,10 @@ namespace bdd_controller
                 
 
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
-                
-                throw;
+                Console.WriteLine("une erreur est survenue dans la BDD:"+e.ToString());
+                rep = "ERROR";
             }
 
             return rep;
@@ -110,11 +113,11 @@ namespace bdd_controller
         private bool DBUpdateWorker (JsonElement root){
 
             var cmd = new NpgsqlCommand("INSERT INTO worker (ip, port, status) VALUES (@ip, @port, @status)"+
-                                        "ON CONFLICT (ip) DO UPDATE  SET status = EXCLUDED.status ;", conn);
+                                        "", conn);
             
             cmd.Parameters.AddWithValue("ip", root.GetProperty("ip").ToString());
             cmd.Parameters.AddWithValue("port", root.GetProperty("workerPort").ToString());
-            cmd.Parameters.AddWithValue("status", root.GetProperty("status").ToString());
+            cmd.Parameters.AddWithValue("status", root.GetProperty("status").ToString().Equals("true"));
 
             int ret = cmd.ExecuteNonQuery();
             
