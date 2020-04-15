@@ -103,9 +103,13 @@ namespace orchestrus_core
             List<int> ports = new List<int>{};
             int portint;
             Console.WriteLine("Renseignez les ports à ouvrir:");
-            string strPort = "notnull";
-            while(!string.IsNullOrEmpty(strPort)){
-                if(!Int32.TryParse(Console.ReadLine(), out portint))
+            string strPort ;
+            bool isDone = false;
+            while(!isDone){
+                strPort= Console.ReadLine();
+                if(string.IsNullOrEmpty(strPort))
+                    isDone = true;
+                else if(!Int32.TryParse(strPort, out portint))
                     Console.WriteLine("Le port doit être un chiffre");
                 else
                     ports.Add(portint);
