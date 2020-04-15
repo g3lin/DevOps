@@ -60,12 +60,16 @@ namespace orchestrus_core
         }
 
         static void helpHelper(){
-            Console.WriteLine("AIDE ");
-
+            Console.WriteLine("AIDE \n");
+            Console.WriteLine("-> download    : Télécharger une image sur un worker");
+            Console.WriteLine("-> launch      : Lancer une image téléchargée sur un worker");
+            Console.WriteLine("-> listWorkers : Liste des workers et leur status");
+            Console.WriteLine("-> addWorker   : Ajouter un worker à la base de données");
+            Console.WriteLine("-> listImages  : Afficher la liste des images d'un worker: ");
         }
 
         static void downloadHelper(){
-            Console.WriteLine("Télécharger une image sur un worker:\n");
+            Console.WriteLine("Télécharger une image sur un worker:");
 
             Console.WriteLine("Renseignez l'IP du runner:");
             string ip = Console.ReadLine();
@@ -100,7 +104,7 @@ namespace orchestrus_core
             int portint;
             Console.WriteLine("Renseignez les ports à ouvrir:");
             string strPort = "notnull";
-            while(!strPort.Equals("")){
+            while(!string.IsNullOrEmpty(strPort)){
                 if(!Int32.TryParse(Console.ReadLine(), out portint))
                     Console.WriteLine("Le port doit être un chiffre");
                 else
@@ -110,7 +114,7 @@ namespace orchestrus_core
             List<string> envs = new List<string>{};
             Console.WriteLine("Renseignez les varaiable d'environement:");
             string envString = Console.ReadLine();
-            while(!envString.Equals("")){
+            while(!string.IsNullOrEmpty(envString)){
                 envs.Add(envString);
                 envString = Console.ReadLine();
             }

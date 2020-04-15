@@ -50,7 +50,7 @@ namespace bdd_controller
                 if(request.ToString().Equals("DBListImages"))
                     rep = DBListImages(root);
                 
-                else if(request.ToString().Equals("DBLisrWorkers"))
+                else if(request.ToString().Equals("DBListWorkers"))
                     rep = DBListWorkers(root);
                 
                 else if(request.ToString().Equals("DBUpdateImage"))
@@ -58,6 +58,9 @@ namespace bdd_controller
                 
                 else if(request.ToString().Equals("DBUpdateWorker"))
                     rep = DBUpdateWorker(root).ToString();
+                else{
+                    throw new Exception("requete malformée");
+                }
 
                 
 
@@ -65,7 +68,7 @@ namespace bdd_controller
             catch (System.Exception e)
             {
                 Console.WriteLine("une erreur est survenue dans la BDD:"+e.ToString());
-                rep = "ERROR";
+                rep = @"{""request"":""responseDB"",""status"":false}";
             }
 
             return rep;
