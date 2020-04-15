@@ -23,9 +23,17 @@ namespace bdd_controller
 
             string pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
             var connString = "Host=postgres_container;Username=postgres;Password="+pgPassword+";Database=IGL601";
-            conn = new NpgsqlConnection(connString);
-            conn.Open();
-            Console.WriteLine("Etat de la connection BDD: "+conn.State.ToString());
+            try {
+                conn = new NpgsqlConnection(connString);
+                conn.Open();
+                Console.WriteLine("Etat de la connection BDD: "+conn.State.ToString());
+            }
+            catch (System.Exception){
+                Console.WriteLine("Erreur lors de la connexion à la BDD PostgreSQL");
+                Environment.Exit(1);
+
+            }
+            
 
         }
 

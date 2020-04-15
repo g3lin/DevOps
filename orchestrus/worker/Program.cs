@@ -100,9 +100,11 @@ namespace worker
                 };
 
                 await startContainer(imageName,parameters);
+                rep = @"{""request"":""responseWorker"",""status"": true}";
             }
             catch(System.Exception e){
                 Console.WriteLine("Un problème est survenu pendant le lancement de l'image: "+e.ToString());
+                rep = @"{""request"":""responseWorker"",""status"": true}";
             }
 
             return rep;
@@ -118,11 +120,13 @@ namespace worker
                     FromImage = root.GetProperty("imageName").ToString()
                 };
                 await createContainer(image);
+                rep = @"{""request"":""responseWorker"",""status"": true}";
                 
             }
             catch (System.Exception e)
             {
                 Console.WriteLine("Problème en téléchargeant l'image: " + e.ToString());
+                rep = @"{""request"":""responseWorker"",""status"": false}";
             }
 
             return rep;
