@@ -83,7 +83,7 @@ namespace bdd_controller
             //     return reader.GetString(0);
             // }
 
-            using(NpgsqlCommand cmd = new NpgsqlCommand("SELECT (name,docker_id, worker_ip, worker_port, image_ports) FROM image WHERE worker_ip = @wip ;", conn)){
+            using(NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM image WHERE worker_ip = @wip ;", conn)){
                 cmd.Parameters.AddWithValue("wip", root.GetProperty("ipWorker").ToString());
                 using(var reader = cmd.ExecuteReader()){
                     string rep = @"{""request"":""responseDB"",""images"":[";
@@ -140,7 +140,9 @@ namespace bdd_controller
                 cmd.Parameters.AddWithValue("name", root.GetProperty("nomImage").ToString());
                 cmd.Parameters.AddWithValue("dID", root.GetProperty("idImage").ToString());
                 cmd.Parameters.AddWithValue("wIP", root.GetProperty("ip").ToString());
-                cmd.Parameters.AddWithValue("wPort", root.GetProperty("workerPort").ToString();
+                int port;
+                Int32.TryParse(root.GetProperty("workerPort").ToString(), out port);
+                cmd.Parameters.AddWithValue("wPort", port);
                 cmd.Parameters.AddWithValue("imPorts", root.GetProperty("ImagePorts").ToString());
 
                 
