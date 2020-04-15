@@ -90,7 +90,7 @@ namespace bdd_controller
                     try
                     {
                         reader.Read();
-                        rep += @"{""idImage"":"""+reader.GetString(0)+@""",""nomImage"":"""+reader.GetString(1)+@""",""ImagePorts"":["+reader.GetString(2)+@"]}";
+                        rep += @"{""idImage"":"""+reader.GetString(1)+@""",""nomImage"":"""+reader.GetString(0)+@""",""ImagePorts"":["+reader.GetString(4)+@"]}";
                     }
                     catch(Exception e){
                         Console.WriteLine("Aucun résulat"+e.ToString());
