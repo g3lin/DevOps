@@ -30,7 +30,7 @@ pushPostgres:buildPostgres
 network:
 	docker network create orchestrus
 
-runworker: buildWorker 
+runWorker:  
 	docker run --name worker --network orchestrus_orchestrus -v /var/run/docker.sock:/var/run/docker.sock -p 4242:4242 -it gelina/worker
 
 runCore: buildCore 
