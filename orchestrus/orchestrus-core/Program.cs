@@ -20,8 +20,6 @@ namespace orchestrus_core
             bool shouldQuit = false;
             while(!shouldQuit)
                 shouldQuit = parseCommand();
-            updateWorkerOnDB("worker",4242,true);
-            listWorkerOnDB();
         }
 
         static bool parseCommand(){
@@ -55,6 +53,7 @@ namespace orchestrus_core
                 Console.WriteLine("Utilisez \"help\"");
             }
             
+            Console.WriteLine("\n\n");
 
             return false;
 
@@ -128,11 +127,33 @@ namespace orchestrus_core
 
         static void addWorkerHelper(){
             Console.WriteLine("Ajouter un worker à la base de données: ");
-            
+
+            Console.WriteLine("Renseignez l'IP du runner:");
+            string ip = Console.ReadLine();
+
+            Console.WriteLine("Renseignez le port du runner:");
+            int port;
+            while(!Int32.TryParse(Console.ReadLine(), out port))
+                Console.WriteLine("Le port doit être un chiffre");
+
+            string rep = updateWorkerOnDB(ip, port, true);  
+            Console.WriteLine(rep);
         }
 
         static void listImagesHelper(){
             Console.WriteLine("Afficher la liste des images d'un worker: ");
+
+            Console.WriteLine("Renseignez l'IP du runner:");
+            string ip = Console.ReadLine();
+
+            Console.WriteLine("Renseignez le port du runner:");
+            int port;
+            while(!Int32.TryParse(Console.ReadLine(), out port))
+                Console.WriteLine("Le port doit être un chiffre");
+
+
+            string rep = ListImagesOnWorkerDB(ip,port);
+            Console.WriteLine(rep);
 
         }
 
@@ -321,7 +342,7 @@ namespace orchestrus_core
                     // Receive the response from the remote device.  
                     int bytesRec = sender.Receive(bytes);  
                     string rep = Encoding.ASCII.GetString(bytes,0,bytesRec);
-                    Console.WriteLine("Echoed test = {0}", rep);  
+                    Console.WriteLine("Réponse du serveur = \"{0}\"", rep);  
     
                     // Release the socket.  
                     sender.Shutdown(SocketShutdown.Both);  
