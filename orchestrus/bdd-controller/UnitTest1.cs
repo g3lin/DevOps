@@ -6,8 +6,12 @@ namespace bdd_controller
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void CommInvalde()
         {
+            Program pr = new Program();
+            string repAtt = @"{""request"":""responseDB"",""status"":false}";
+            Assert.IsTrue(pr.parseCommand("invalide").Equals(repAtt));
         }
+
     }
 }

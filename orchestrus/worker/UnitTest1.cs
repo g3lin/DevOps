@@ -8,6 +8,8 @@ namespace worker
         [TestMethod]
         public void TestMethod1()
         {
+            Program pr = new Program();
+            Assert.IsTrue(pr.parseCommand("{\"request\":\"invalid\"}").Equals(""));
         }
     }
 }

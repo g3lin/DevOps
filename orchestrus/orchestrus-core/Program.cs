@@ -22,7 +22,7 @@ namespace orchestrus_core
                 shouldQuit = parseCommand();
         }
 
-        static bool parseCommand(){
+        public static bool parseCommand(){
 
             Console.WriteLine("Enter command (you can type \"help\"): ");
             string comm = Console.ReadLine();

@@ -8,6 +8,7 @@ namespace orchestrus_core
         [TestMethod]
         public void TestMethod1()
         {
+            // Assert.IsFalse(Program.parseCommand());
         }
 
         
